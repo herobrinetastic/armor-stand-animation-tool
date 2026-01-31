@@ -4,15 +4,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 export function initScene() {
     const scene = new THREE.Scene();
-
-    const texture = new THREE.TextureLoader().load('assets/textures/minecraft_skybox.webp');
-    texture.magFilter = THREE.NearestFilter;
-    texture.minFilter = THREE.LinearMipMapLinearFilter;
-    const geometry = new THREE.SphereGeometry(500, 60, 40);
-    geometry.scale(-1, 1, 1);
-    const material = new THREE.MeshBasicMaterial({ map: texture, color: 0x9E9D9D });
-    const skybox = new THREE.Mesh(geometry, material);
-    scene.add(skybox);
+    scene.background = new THREE.Color(0x333333); // Dark gray background
 
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
