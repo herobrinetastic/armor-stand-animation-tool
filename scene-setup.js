@@ -17,7 +17,7 @@ export function initScene() {
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
     // Final tuned values for clean full-body view (centered on torso)
-    camera.position.set(0.25, 1, 2);
+    camera.position.set(0.75, 1, 2);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -32,7 +32,7 @@ export function initScene() {
     controls.maxPolarAngle = Math.PI / 2.1; // prevent going under ground
 
     // This is the critical line that was missing
-    controls.target.set(0, 1, 0);
+    controls.target.set(0.75, 1, 0);
     controls.update();
 
     // Lights
