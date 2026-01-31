@@ -75,19 +75,7 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
   const animation = { playing: false, tempo: 1, keyframes: [], kfIndex: 0, currentTime: 0 };
   const animFolder = addAnimationFolder(gui, animation, pose, updatePose, gui, scene, camera, renderer);
 
-  gui.hide();
-  const togglePoseBtn = document.getElementById('toggle-pose-btn');
-  let poseVisible = false;
-  togglePoseBtn.addEventListener('click', () => {
-    poseVisible = !poseVisible;
-    if (poseVisible) {
-      gui.show();
-      togglePoseBtn.textContent = 'Hide Posing Controls';
-    } else {
-      gui.hide();
-      togglePoseBtn.textContent = 'Posing Controls';
-    }
-  });
+  gui.hide(); // Kept hidden by default
 
   transformControls.addEventListener('objectChange', () => {
     if (transformControls.object) {

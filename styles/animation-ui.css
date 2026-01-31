@@ -50,8 +50,8 @@
     background: #555;
 }
 
-/* Toggle Button */
-#toggle-pose-btn {
+/* Reset Button */
+#reset-pose-btn {
     position: absolute;
     top: 15px;
     left: 15px;
@@ -64,7 +64,7 @@
     cursor: pointer;
 }
 
-#toggle-pose-btn:hover {
+#reset-pose-btn:hover {
     background: #555;
 }
 

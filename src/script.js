@@ -29,6 +29,18 @@ createArmorStand(armorStand).then(groups => {
     document.getElementById('kfIndex-value').textContent = animation.kfIndex;
     updateTimeline();
   });
+
+  // Reset button listener
+  document.getElementById('reset-pose-btn').addEventListener('click', () => {
+    pose.headX = 0; pose.headY = 0; pose.headZ = 0;
+    pose.bodyX = 0; pose.bodyY = 0; pose.bodyZ = 0;
+    pose.leftArmX = 0; pose.leftArmY = 0; pose.leftArmZ = 0;
+    pose.rightArmX = 0; pose.rightArmY = 0; pose.rightArmZ = 0;
+    pose.leftLegX = 0; pose.leftLegY = 0; pose.leftLegZ = 0;
+    pose.rightLegX = 0; pose.rightLegY = 0; pose.rightLegZ = 0;
+    updatePose();
+    gui.updateDisplay();
+  });
 });
 
 window.addEventListener('resize', () => {
