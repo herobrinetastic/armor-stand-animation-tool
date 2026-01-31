@@ -11,14 +11,14 @@ const { scene, camera, renderer, controls, armorStand } = initScene();
 const transformControls = initTransformControls(scene, camera, renderer, controls);
 const groups = createArmorStand(armorStand);
 initSelection(camera, transformControls, groups);
-const { gui, pose, updatePose, animation } = initGUI(groups);
+const { gui, pose, updatePose, animation, updateVisualizer } = initGUI(groups, scene, camera);
 
 animation.currentTime = 0;
 
 function updateAnimation(delta) {
-    if (!animation.isPlaying || animation.keyframes.length < 1) return;
+    if (!animation.playing || animation.keyframes.length < 2) return;
 
-    animation.currentTime = (animation.currentTime || 0) + delta;
+    animation.currentTime += delta;
 
     const frameDuration = 1 / animation.tempo;          // seconds per keyframe
     const totalDuration = animation.keyframes.length * frameDuration;
@@ -28,9 +28,14 @@ function updateAnimation(delta) {
 
     const poseData = animation.keyframes[frameIndex];
 
+    animation.kfIndex = frameIndex;
+    document.getElementById('kfIndex').value = frameIndex;
+    document.getElementById('kfIndex-value').textContent = frameIndex;
+
     Object.assign(pose, poseData);
     updatePose();
     gui.updateDisplay();
+    updateVisualizer();
 }
 startAnimation(renderer, scene, camera, controls, updateAnimation);
 
