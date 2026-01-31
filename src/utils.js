@@ -22,42 +22,30 @@ export function createMesh(geometry, material) {
 }
 
 export function captureThumbnail(scene, camera, renderer) {
-  // Save original settings
   const originalWidth = renderer.domElement.width;
   const originalHeight = renderer.domElement.height;
-  const originalAspect = camera.aspect;
-  const originalPosition = camera.position.clone();
-  const originalRotation = camera.rotation.clone();
-  const originalUp = camera.up.clone();
-  const originalZoom = camera.zoom;
 
-  // Set to portrait (slimmer, taller)
+  // Portrait dimensions
   const thumbWidth = 200;
   const thumbHeight = 320;
-  renderer.setSize(thumbWidth, thumbHeight);
-  camera.aspect = thumbWidth / thumbHeight;
-  camera.updateProjectionMatrix();
 
-  // Reset to fixed front view: centered on model (x=0, y=1, z=0), looking at center
-  camera.position.set(0, 1, 2); // Front view
-  camera.lookAt(0, 1, 0); // Target model center
-  camera.up.set(0, 1, 0); // Standard up
-  camera.zoom = 1; // Reset zoom
-  camera.updateProjectionMatrix();
+  // Temporarily resize renderer for high-quality thumbnail
+  renderer.setSize(thumbWidth, thumbHeight, false); // false = don't update CSS size
 
-  // Render and capture
-  renderer.render(scene, camera);
+  // Create a temporary camera (never touches main camera/controls)
+  const tempCamera = new THREE.PerspectiveCamera(50, thumbWidth / thumbHeight, 0.1, 1000);
+  tempCamera.position.set(0, 1, 2.5);
+  tempCamera.lookAt(0, 1, 0);
+  tempCamera.up.set(0, 1, 0);
+  tempCamera.updateProjectionMatrix();
+
+  // Render once with temp camera
+  renderer.render(scene, tempCamera);
+
   const dataUrl = renderer.domElement.toDataURL('image/png');
 
-  // Restore original
-  renderer.setSize(originalWidth, originalHeight);
-  camera.aspect = originalAspect;
-  camera.position.copy(originalPosition);
-  camera.rotation.copy(originalRotation);
-  camera.up.copy(originalUp);
-  camera.zoom = originalZoom;
-  camera.updateProjectionMatrix();
-  camera.updateMatrixWorld(true); // Force update
+  // Restore original renderer size
+  renderer.setSize(originalWidth, originalHeight, false);
 
   return dataUrl;
 }

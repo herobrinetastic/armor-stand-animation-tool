@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { createMesh } from './utils.js';
 
-export function createArmorStand(armorStand) {
+export async function createArmorStand(armorStand) {
   const s = 1 / 16;
   const hipY = 12 * s;
   const neckY = 24 * s;
@@ -10,12 +10,23 @@ export function createArmorStand(armorStand) {
   const shoulderX = 6 * s;
 
   const loader = new THREE.TextureLoader();
+
+  const woodTexturePromise = new Promise((resolve) => {
+    const texture = loader.load('assets/textures/oak_planks.png', resolve);
+    texture.magFilter = THREE.NearestFilter;
+    texture.minFilter = THREE.NearestFilter;
+  });
+
+  const stoneTexturePromise = new Promise((resolve) => {
+    const texture = loader.load('assets/textures/smooth_stone.png', resolve);
+    texture.magFilter = THREE.NearestFilter;
+    texture.minFilter = THREE.NearestFilter;
+  });
+
+  await Promise.all([woodTexturePromise, stoneTexturePromise]);
+
   const woodTexture = loader.load('assets/textures/oak_planks.png');
-  woodTexture.magFilter = THREE.NearestFilter;
-  woodTexture.minFilter = THREE.NearestFilter;
   const stoneTexture = loader.load('assets/textures/smooth_stone.png');
-  stoneTexture.magFilter = THREE.NearestFilter;
-  stoneTexture.minFilter = THREE.NearestFilter;
 
   // Baseplate
   let geometry = new THREE.BoxGeometry(12*s, 1*s, 12*s);

@@ -1,7 +1,6 @@
 // src/gui.js
 import * as THREE from 'three';
 import { addAnimationFolder } from './animation.js';
-import { captureThumbnail } from './utils.js';
 
 export function initGUI(groups, scene, camera, transformControls, renderer) {
   const gui = new dat.GUI({ width: 320 });
@@ -75,13 +74,6 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
 
   const animation = { playing: false, tempo: 1, keyframes: [], kfIndex: 0, currentTime: 0 };
   const animFolder = addAnimationFolder(gui, animation, pose, updatePose, gui, scene, camera, renderer);
-
-  // Add default keyframe
-  const defaultThumbnail = captureThumbnail(scene, camera, renderer);
-  animation.keyframes.push({ ...pose, thumbnail: defaultThumbnail });
-  animation.kfIndex = 0;
-  animFolder.refreshKfSlider();
-  animFolder.updateTimeline();
 
   gui.hide();
   const togglePoseBtn = document.getElementById('toggle-pose-btn');
