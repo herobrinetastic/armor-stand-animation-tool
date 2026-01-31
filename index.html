@@ -5,7 +5,6 @@
     <title>Minecraft Armor Stand 3D</title>
     <style>body { margin: 0; } canvas { display: block; }</style>
     <link rel="stylesheet" href="styles/animation-ui.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js"></script>
 </head>
 <body>
     <button id="reset-pose-btn">Reset Pose</button>
@@ -24,6 +23,48 @@
             <button id="clear">Clear All</button>
             <button id="saveFile">↓ Save Animation</button>
             <button id="loadFile">↑ Load Animation</button>
+        </div>
+    </div>
+
+    <div id="pose-window">
+        <div class="header">Pose Controls <button id="toggle-pose-content">−</button></div>
+        <div class="content" id="pose-content">
+            <div class="part">
+                <h3>Head</h3>
+                <label>X: <input type="range" class="rotation" data-part="head" data-axis="x" min="-180" max="180" step="0.1" value="0"></label>
+                <label>Y: <input type="range" class="rotation" data-part="head" data-axis="y" min="-180" max="180" step="0.1" value="0"></label>
+                <label>Z: <input type="range" class="rotation" data-part="head" data-axis="z" min="-180" max="180" step="0.1" value="0"></label>
+            </div>
+            <div class="part">
+                <h3>Body</h3>
+                <label>X: <input type="range" class="rotation" data-part="body" data-axis="x" min="-180" max="180" step="0.1" value="0"></label>
+                <label>Y: <input type="range" class="rotation" data-part="body" data-axis="y" min="-180" max="180" step="0.1" value="0"></label>
+                <label>Z: <input type="range" class="rotation" data-part="body" data-axis="z" min="-180" max="180" step="0.1" value="0"></label>
+            </div>
+            <div class="part">
+                <h3>Left Arm</h3>
+                <label>X: <input type="range" class="rotation" data-part="leftArm" data-axis="x" min="-180" max="180" step="0.1" value="0"></label>
+                <label>Y: <input type="range" class="rotation" data-part="leftArm" data-axis="y" min="-180" max="180" step="0.1" value="0"></label>
+                <label>Z: <input type="range" class="rotation" data-part="leftArm" data-axis="z" min="-180" max="180" step="0.1" value="0"></label>
+            </div>
+            <div class="part">
+                <h3>Right Arm</h3>
+                <label>X: <input type="range" class="rotation" data-part="rightArm" data-axis="x" min="-180" max="180" step="0.1" value="0"></label>
+                <label>Y: <input type="range" class="rotation" data-part="rightArm" data-axis="y" min="-180" max="180" step="0.1" value="0"></label>
+                <label>Z: <input type="range" class="rotation" data-part="rightArm" data-axis="z" min="-180" max="180" step="0.1" value="0"></label>
+            </div>
+            <div class="part">
+                <h3>Left Leg</h3>
+                <label>X: <input type="range" class="rotation" data-part="leftLeg" data-axis="x" min="-180" max="180" step="0.1" value="0"></label>
+                <label>Y: <input type="range" class="rotation" data-part="leftLeg" data-axis="y" min="-180" max="180" step="0.1" value="0"></label>
+                <label>Z: <input type="range" class="rotation" data-part="leftLeg" data-axis="z" min="-180" max="180" step="0.1" value="0"></label>
+            </div>
+            <div class="part">
+                <h3>Right Leg</h3>
+                <label>X: <input type="range" class="rotation" data-part="rightLeg" data-axis="x" min="-180" max="180" step="0.1" value="0"></label>
+                <label>Y: <input type="range" class="rotation" data-part="rightLeg" data-axis="y" min="-180" max="180" step="0.1" value="0"></label>
+                <label>Z: <input type="range" class="rotation" data-part="rightLeg" data-axis="z" min="-180" max="180" step="0.1" value="0"></label>
+            </div>
         </div>
     </div>
 
