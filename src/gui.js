@@ -3,25 +3,13 @@ import * as THREE from 'three';
 import { addAnimationFolder } from './animation.js';
 
 export function initGUI(groups, scene, camera, transformControls, renderer) {
-  const gui = new dat.GUI({ width: 320 });
-  gui.domElement.style.position = 'absolute';
-  gui.domElement.style.top = '60px';
-  gui.domElement.style.left = '10px';
-
   const pose = {
     headX: 0, headY: 0, headZ: 0,
     bodyX: 0, bodyY: 0, bodyZ: 0,
     leftArmX: 0, leftArmY: 0, leftArmZ: 0,
     rightArmX: 0, rightArmY: 0, rightArmZ: 0,
     leftLegX: 0, leftLegY: 0, leftLegZ: 0,
-    rightLegX: 0, rightLegY: 0, rightLegZ: 0,
-    showArms: true,
-    noBasePlate: false,
-    small: false,
-    invisible: false,
-    customNameVisible: false,
-    noGravity: false,
-    marker: false
+    rightLegX: 0, rightLegY: 0, rightLegZ: 0
   };
 
   function updatePose() {
@@ -33,50 +21,21 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
     groups.rightLegGroup.rotation.set(THREE.MathUtils.degToRad(pose.rightLegX), THREE.MathUtils.degToRad(pose.rightLegY), THREE.MathUtils.degToRad(pose.rightLegZ));
   }
 
-  const headFolder = gui.addFolder('Head');
-  headFolder.add(pose, 'headX', -180, 180, 0.1).onChange(updatePose);
-  headFolder.add(pose, 'headY', -180, 180, 0.1).onChange(updatePose);
-  headFolder.add(pose, 'headZ', -180, 180, 0.1).onChange(updatePose);
-
-  const bodyFolder = gui.addFolder('Body');
-  bodyFolder.add(pose, 'bodyX', -180, 180, 0.1).onChange(updatePose);
-  bodyFolder.add(pose, 'bodyY', -180, 180, 0.1).onChange(updatePose);
-  bodyFolder.add(pose, 'bodyZ', -180, 180, 0.1).onChange(updatePose);
-
-  const leftArmFolder = gui.addFolder('Left Arm');
-  leftArmFolder.add(pose, 'leftArmX', -180, 180, 0.1).onChange(updatePose);
-  leftArmFolder.add(pose, 'leftArmY', -180, 180, 0.1).onChange(updatePose);
-  leftArmFolder.add(pose, 'leftArmZ', -180, 180, 0.1).onChange(updatePose);
-
-  const rightArmFolder = gui.addFolder('Right Arm');
-  rightArmFolder.add(pose, 'rightArmX', -180, 180, 0.1).onChange(updatePose);
-  rightArmFolder.add(pose, 'rightArmY', -180, 180, 0.1).onChange(updatePose);
-  rightArmFolder.add(pose, 'rightArmZ', -180, 180, 0.1).onChange(updatePose);
-
-  const leftLegFolder = gui.addFolder('Left Leg');
-  leftLegFolder.add(pose, 'leftLegX', -180, 180, 0.1).onChange(updatePose);
-  leftLegFolder.add(pose, 'leftLegY', -180, 180, 0.1).onChange(updatePose);
-  leftLegFolder.add(pose, 'leftLegZ', -180, 180, 0.1).onChange(updatePose);
-
-  const rightLegFolder = gui.addFolder('Right Leg');
-  rightLegFolder.add(pose, 'rightLegX', -180, 180, 0.1).onChange(updatePose);
-  rightLegFolder.add(pose, 'rightLegY', -180, 180, 0.1).onChange(updatePose);
-  rightLegFolder.add(pose, 'rightLegZ', -180, 180, 0.1).onChange(updatePose);
-
-  const propertiesFolder = gui.addFolder('Properties');
-  propertiesFolder.add(pose, 'showArms');
-  propertiesFolder.add(pose, 'noBasePlate');
-  propertiesFolder.add(pose, 'small');
-  propertiesFolder.add(pose, 'invisible');
-  propertiesFolder.add(pose, 'customNameVisible');
-  propertiesFolder.add(pose, 'noGravity');
-  propertiesFolder.add(pose, 'marker');
-
   const animation = { playing: false, tempo: 1, keyframes: [], kfIndex: 0, currentTime: 0 };
-  const animFolder = addAnimationFolder(gui, animation, pose, updatePose, gui, scene, camera, renderer);
+  const animFolder = addAnimationFolder(null, animation, pose, updatePose, null, scene, camera, renderer); // Removed gui dependency
 
-  gui.hide(); // Kept hidden by default
+  // Bind custom sliders
+  const sliders = document.querySelectorAll('#pose-window .rotation');
+  sliders.forEach(slider => {
+    slider.addEventListener('input', (e) => {
+      const part = e.target.dataset.part;
+      const axis = e.target.dataset.axis;
+      pose[`${part}${axis.toUpperCase()}`] = parseFloat(e.target.value);
+      updatePose();
+    });
+  });
 
+  // Gizmo sync
   transformControls.addEventListener('objectChange', () => {
     if (transformControls.object) {
       const group = transformControls.object;
@@ -84,17 +43,29 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
       const degX = THREE.MathUtils.radToDeg(rot.x);
       const degY = THREE.MathUtils.radToDeg(rot.y);
       const degZ = THREE.MathUtils.radToDeg(rot.z);
+      let part;
       switch (group.name) {
-        case 'headGroup': pose.headX = degX; pose.headY = degY; pose.headZ = degZ; break;
-        case 'bodyGroup': pose.bodyX = degX; pose.bodyY = degY; pose.bodyZ = degZ; break;
-        case 'leftArmGroup': pose.leftArmX = degX; pose.leftArmY = degY; pose.leftArmZ = degZ; break;
-        case 'rightArmGroup': pose.rightArmX = degX; pose.rightArmY = degY; pose.rightArmZ = degZ; break;
-        case 'leftLegGroup': pose.leftLegX = degX; pose.leftLegY = degY; pose.leftLegZ = degZ; break;
-        case 'rightLegGroup': pose.rightLegX = degX; pose.rightLegY = degY; pose.rightLegZ = degZ; break;
+        case 'headGroup': part = 'head'; break;
+        case 'bodyGroup': part = 'body'; break;
+        case 'leftArmGroup': part = 'leftArm'; break;
+        case 'rightArmGroup': part = 'rightArm'; break;
+        case 'leftLegGroup': part = 'leftLeg'; break;
+        case 'rightLegGroup': part = 'rightLeg'; break;
       }
-      gui.updateDisplay();
+      if (part) {
+        pose[`${part}X`] = degX;
+        pose[`${part}Y`] = degY;
+        pose[`${part}Z`] = degZ;
+        sliders.forEach(sl => {
+          if (sl.dataset.part === part) {
+            if (sl.dataset.axis === 'x') sl.value = degX;
+            if (sl.dataset.axis === 'y') sl.value = degY;
+            if (sl.dataset.axis === 'z') sl.value = degZ;
+          }
+        });
+      }
     }
   });
 
-  return { gui, pose, updatePose, animation, updateTimeline: animFolder.updateTimeline };
+  return { pose, updatePose, animation, updateTimeline: animFolder.updateTimeline };
 }

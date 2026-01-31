@@ -3,31 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <title>Minecraft Armor Stand 3D</title>
-    <style>body { margin: 0; } canvas { display: block; }</style>
     <link rel="stylesheet" href="styles/animation-ui.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js"></script>
 </head>
 <body>
-    <button id="reset-pose-btn">Reset Pose</button>
-    
-    <div id="animation-window">
-        <div class="header">Animation Controls</div>
-        <div class="content">
-            <label>Play / Pause: <input type="checkbox" id="playing"></label>
-            <label>Speed (fps): <input type="range" id="tempo" min="0.1" max="10" step="0.1" value="1"><span id="tempo-value">1</span></label>
-            <label>Keyframe: <input type="range" id="kfIndex" min="0" max="0" step="1" value="0"><span id="kfIndex-value">0</span></label>
-            
-            <button id="add">+ Add Keyframe</button>
-            <button id="insert">↳ Insert After</button>
-            <button id="save">Save Current Pose</button>
-            <button id="delete">− Delete Keyframe</button>
-            <button id="clear">Clear All</button>
-            <button id="saveFile">↓ Save Animation</button>
-            <button id="loadFile">↑ Load Animation</button>
+    <div id="ui-grid">
+        <div id="left-window">
+            <div id="pose-window">
+                <div class="header">Pose Controls</div>
+                <div class="content">
+                    <div class="part">
+                        <h3>Head</h3>
+                        <label>X: <input type="range" class="rotation" data-part="head" data-axis="x" min="-180" max="180" step="0.1" value="0"></label>
+                        <label>Y: <input type="range" class="rotation" data-part="head" data-axis="y" min="-180" max="180" step="0.1" value="0"></label>
+                        <label>Z: <input type="range" class="rotation" data-part="head" data-axis="z" min="-180" max="180" step="0.1" value="0"></label>
+                    </div>
+                    <div class="part">
+                        <h3>Body</h3>
+                        <label>X: <input type="range" class="rotation" data-part="body" data-axis="x" min="-180" max="180" step="0.1" value="0"></label>
+                        <label>Y: <input type="range" class="rotation" data-part="body" data-axis="y" min="-180" max="180" step="0.1" value="0"></label>
+                        <label>Z: <input type="range" class="rotation" data-part="body" data-axis="z" min="-180" max="180" step="0.1" value="0"></label>
+                    </div>
+                    <div class="part">
+                        <h3>Left Arm</h3>
+                        <label>X: <input type="range" class="rotation" data-part="leftArm" data-axis="x" min="-180" max="180" step="0.1" value="0"></label>
+                        <label>Y: <input type="range" class="rotation" data-part="leftArm" data-axis="y" min="-180" max="180" step="0.1" value="0"></label>
+                        <label>Z: <input type="range" class="rotation" data-part="leftArm" data-axis="z" min="-180" max="180" step="0.1" value="0"></label>
+                    </div>
+                    <div class="part">
+                        <h3>Right Arm</h3>
+                        <label>X: <input type="range" class="rotation" data-part="rightArm" data-axis="x" min="-180" max="180" step="0.1" value="0"></label>
+                        <label>Y: <input type="range" class="rotation" data-part="rightArm" data-axis="y" min="-180" max="180" step="0.1" value="0"></label>
+                        <label>Z: <input type="range" class="rotation" data-part="rightArm" data-axis="z" min="-180" max="180" step="0.1" value="0"></label>
+                    </div>
+                    <div class="part">
+                        <h3>Left Leg</h3>
+                        <label>X: <input type="range" class="rotation" data-part="leftLeg" data-axis="x" min="-180" max="180" step="0.1" value="0"></label>
+                        <label>Y: <input type="range" class="rotation" data-part="leftLeg" data-axis="y" min="-180" max="180" step="0.1" value="0"></label>
+                        <label>Z: <input type="range" class="rotation" data-part="leftLeg" data-axis="z" min="-180" max="180" step="0.1" value="0"></label>
+                    </div>
+                    <div class="part">
+                        <h3>Right Leg</h3>
+                        <label>X: <input type="range" class="rotation" data-part="rightLeg" data-axis="x" min="-180" max="180" step="0.1" value="0"></label>
+                        <label>Y: <input type="range" class="rotation" data-part="rightLeg" data-axis="y" min="-180" max="180" step="0.1" value="0"></label>
+                        <label>Z: <input type="range" class="rotation" data-part="rightLeg" data-axis="z" min="-180" max="180" step="0.1" value="0"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="center-window">
+            <button id="reset-pose-btn">Reset Pose</button>
+            <div id="model-container"></div> <!-- Model canvas appended here -->
+        </div>
+        <div id="right-window">
+            <div id="animation-window">
+                <div class="header">Animation Controls</div>
+                <div class="content">
+                    <label>Play / Pause: <input type="checkbox" id="playing"></label>
+                    <label>Speed (fps): <input type="range" id="tempo" min="0.1" max="10" step="0.1" value="1"><span id="tempo-value">1</span></label>
+                    <label>Keyframe: <input type="range" id="kfIndex" min="0" max="0" step="1" value="0"><span id="kfIndex-value">0</span></label>
+                    
+                    <button id="add">+ Add Keyframe</button>
+                    <button id="insert">↳ Insert After</button>
+                    <button id="save">Save Current Pose</button>
+                    <button id="delete">− Delete Keyframe</button>
+                    <button id="clear">Clear All</button>
+                    <button id="saveFile">↓ Save Animation</button>
+                    <button id="loadFile">↑ Load Animation</button>
+                </div>
+            </div>
+        </div>
+        <div id="bottom-window">
+            <div id="timeline" class="timeline"></div>
         </div>
     </div>
-
-    <div id="timeline" class="timeline"></div>
 
     <script type="importmap">
         {
