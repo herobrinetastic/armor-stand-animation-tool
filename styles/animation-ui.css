@@ -68,17 +68,10 @@ body {
     justify-content: space-between;
 }
 
-.header button {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-}
-
 .content {
     flex: 1; /* Expand content */
     height: 100%; /* Force full height */
-    overflow: hidden; /* No scroll in contents */
+    overflow-y: auto;
 }
 
 .content label {
