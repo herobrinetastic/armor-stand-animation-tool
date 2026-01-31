@@ -47,6 +47,7 @@ export function initScene() {
     scene.add(new THREE.AmbientLight(0xffe0b2, 0.8));
 
     const armorStand = new THREE.Group();
+    armorStand.name = 'armorStand'; // Added name for easy cloning
     scene.add(armorStand);
 
     console.log('✅ Camera initialized → position:', camera.position.toArray(), 'target:', controls.target.toArray());

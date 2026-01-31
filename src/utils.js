@@ -32,15 +32,30 @@ export function captureThumbnail(scene, camera, renderer) {
   // Temporarily resize renderer for high-quality thumbnail
   renderer.setSize(thumbWidth, thumbHeight, false); // false = don't update CSS size
 
-  // Create a temporary camera (never touches main camera/controls)
+  // Create a temporary camera
   const tempCamera = new THREE.PerspectiveCamera(50, thumbWidth / thumbHeight, 0.1, 1000);
-  tempCamera.position.set(0, 1, 2.5);
-  tempCamera.lookAt(0, 1, 0);
+  tempCamera.position.set(0, 1, 3); // Zoomed out
+  tempCamera.lookAt(0, 1, 0); // Centered target
   tempCamera.up.set(0, 1, 0);
   tempCamera.updateProjectionMatrix();
 
-  // Render once with temp camera
-  renderer.render(scene, tempCamera);
+  // Create temp scene with dark gray background
+  const tempScene = new THREE.Scene();
+  tempScene.background = new THREE.Color(0x333333);
+
+  // Clone armorStand and add to temp scene
+  const armorStandClone = scene.getObjectByName('armorStand').clone(); // Assuming armorStand.name = 'armorStand'; add if not
+  tempScene.add(armorStandClone);
+
+  // Clone lights from original scene
+  scene.traverse((child) => {
+    if (child.isLight) {
+      tempScene.add(child.clone());
+    }
+  });
+
+  // Render once with temp scene and camera
+  renderer.render(tempScene, tempCamera);
 
   const dataUrl = renderer.domElement.toDataURL('image/png');
 
