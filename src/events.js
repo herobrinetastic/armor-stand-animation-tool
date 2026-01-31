@@ -23,6 +23,7 @@ export function bindAnimationEvents(animation, pose, applyPose, globalGui, updat
       Object.assign(pose, animation.keyframes[animation.kfIndex]);
       applyPose();
       globalGui.updateDisplay();
+      updateVisualizer(pose);
     }
     kfValue.textContent = animation.kfIndex;
   });

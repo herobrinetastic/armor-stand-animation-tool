@@ -80,6 +80,7 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, u
         Object.assign(pose, animation.keyframes[animation.kfIndex]);
         applyPose();
         globalGui.updateDisplay();
+        updateVisualizer(pose);
       }
     }
   };

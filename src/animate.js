@@ -1,24 +1,27 @@
 // src/animate.js
 export function startAnimation(renderer, scene, camera, controls, animation, pose, updatePose, gui, updateVisualizer) {
-  function animate() {
+  let lastTime = 0;
+  function animate(time) {
     requestAnimationFrame(animate);
+    const delta = (time - lastTime) / 1000;
+    lastTime = time;
     controls.update();
-    updateAnimation(animation, pose, updatePose, gui, updateVisualizer); // Call moved function
+    updateAnimation(animation, pose, updatePose, gui, updateVisualizer, delta);
     renderer.render(scene, camera);
   }
-  animate();
+  animate(0);
 }
 
-function updateAnimation(animation, pose, updatePose, gui, updateVisualizer) { // Moved from script.js
+function updateAnimation(animation, pose, updatePose, gui, updateVisualizer, delta) {
   if (!animation.playing || animation.keyframes.length < 2) return;
 
-  animation.currentTime += 1 / 60; // Approximate delta (use better timing if needed)
+  animation.currentTime += delta;
 
   const frameDuration = 1 / animation.tempo;          // seconds per keyframe
   const totalDuration = animation.keyframes.length * frameDuration;
 
-  const time = animation.currentTime % totalDuration;
-  const frameIndex = Math.floor(time / frameDuration);
+  const timeMod = animation.currentTime % totalDuration;
+  const frameIndex = Math.floor(timeMod / frameDuration);
 
   const poseData = animation.keyframes[frameIndex];
 
@@ -29,5 +32,5 @@ function updateAnimation(animation, pose, updatePose, gui, updateVisualizer) { /
   Object.assign(pose, poseData);
   updatePose();
   gui.updateDisplay();
-  updateVisualizer();
+  updateVisualizer(pose);
 }
