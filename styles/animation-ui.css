@@ -97,7 +97,7 @@
 .timeline {
     position: absolute;
     bottom: 20px;
-    left: 10px;  /* Pushed to left side */
+    left: 10px;  /* Pushed to left side of the model window */
     transform: none;
     display: flex;
     gap: 8px;
@@ -109,8 +109,8 @@
 }
 
 .timeline img {
-    width: 64px;
-    height: 64px;
+    width: 50px;  /* Slimmer portrait aspect ratio */
+    height: 80px;
     object-fit: cover;
     border: 3px solid transparent;
     border-radius: 6px;
@@ -119,4 +119,4 @@
 }
 
 .timeline img:hover { transform: scale(1.08); border-color: #4CAF50; }
-.timeline img.active { border-color: red; box-shadow: 0 0 12px rgba(255,0,0,0.6); }  /* Changed to red */
+.timeline img.active { border-color: red; box-shadow: 0 0 12px rgba(255,0,0,0.6); }  /* Highlight color to red */

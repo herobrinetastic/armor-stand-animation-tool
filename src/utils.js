@@ -22,6 +22,26 @@ export function createMesh(geometry, material) {
 }
 
 export function captureThumbnail(scene, camera, renderer) {
+  // Save original settings
+  const originalWidth = renderer.domElement.width;
+  const originalHeight = renderer.domElement.height;
+  const originalAspect = camera.aspect;
+
+  // Set to portrait (slimmer, taller)
+  const thumbWidth = 200;
+  const thumbHeight = 320;
+  renderer.setSize(thumbWidth, thumbHeight);
+  camera.aspect = thumbWidth / thumbHeight;
+  camera.updateProjectionMatrix();
+
+  // Render and capture
   renderer.render(scene, camera);
-  return renderer.domElement.toDataURL('image/png');
+  const dataUrl = renderer.domElement.toDataURL('image/png');
+
+  // Restore original
+  renderer.setSize(originalWidth, originalHeight);
+  camera.aspect = originalAspect;
+  camera.updateProjectionMatrix();
+
+  return dataUrl;
 }
