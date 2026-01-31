@@ -57,6 +57,7 @@ export function captureThumbnail(scene, camera, renderer) {
   camera.up.copy(originalUp);
   camera.zoom = originalZoom;
   camera.updateProjectionMatrix();
+  camera.updateMatrixWorld(true); // Force update
 
   return dataUrl;
 }
