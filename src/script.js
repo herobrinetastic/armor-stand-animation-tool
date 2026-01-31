@@ -12,11 +12,11 @@ const { scene, camera, renderer, controls, armorStand } = initScene();
 const transformControls = initTransformControls(scene, camera, renderer, controls);
 createArmorStand(armorStand).then(groups => {
   initSelection(camera, transformControls, groups);
-  const { gui, pose, updatePose, animation, updateTimeline } = initGUI(groups, scene, camera, transformControls, renderer);
+  const { pose, updatePose, animation, updateTimeline } = initGUI(groups, scene, camera, transformControls, renderer);
 
   animation.currentTime = 0;
 
-  startAnimation(renderer, scene, camera, controls, animation, pose, updatePose, gui, updateTimeline);
+  startAnimation(renderer, scene, camera, controls, animation, pose, updatePose, null, updateTimeline);
 
   // Add default keyframe after textures and first render
   requestAnimationFrame(() => {
@@ -39,7 +39,21 @@ createArmorStand(armorStand).then(groups => {
     pose.leftLegX = 0; pose.leftLegY = 0; pose.leftLegZ = 0;
     pose.rightLegX = 0; pose.rightLegY = 0; pose.rightLegZ = 0;
     updatePose();
-    gui.updateDisplay();
+    const sliders = document.querySelectorAll('#pose-window .rotation');
+    sliders.forEach(sl => sl.value = 0);
+  });
+
+  // Pose content toggle listener
+  document.getElementById('toggle-pose-content').addEventListener('click', () => {
+    const content = document.getElementById('pose-content');
+    const toggleBtn = document.getElementById('toggle-pose-content');
+    if (content.style.display === 'none') {
+      content.style.display = 'block';
+      toggleBtn.textContent = '−';
+    } else {
+      content.style.display = 'none';
+      toggleBtn.textContent = '+';
+    }
   });
 });
 

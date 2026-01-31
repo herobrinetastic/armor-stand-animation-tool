@@ -1,6 +1,6 @@
 #animation-window {
     position: absolute;
-    top: 100px;
+    top: 50px;
     right: 10px;
     background: rgba(0,0,0,0.8);
     color: white;
@@ -63,80 +63,58 @@
     background: #555;
 }
 
-/* dat.GUI dark theme (matches animation window) */
-.dg {
-    position: absolute !important;
-    top: 60px !important;
-    left: 10px !important;
-    z-index: 9 !important;
-    background-color: rgba(0,0,0,0.8) !important;
-    color: white !important;
-    border: 1px solid #333 !important;
-    border-radius: 8px !important;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5) !important;
-    width: 320px !important;
+/* Pose window */
+#pose-window {
+    position: absolute;
+    top: 50px; /* Below reset */
+    left: 10px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    width: 200px;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    z-index: 10;
 }
 
-.dg .main {
-    background: transparent !important;
+#pose-window .header {
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
 }
 
-.dg .title {
-    background: #333 !important;
-    color: white !important;
-    border-bottom: 1px solid #444 !important;
-    font-weight: bold !important;
-    padding: 5px 8px !important;
+#pose-window #toggle-pose-content {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
 }
 
-.dg .closed .title {
-    border-bottom: none !important;
+#pose-window .content {
+    display: block; /* Initial visible */
+    max-height: 400px;
+    overflow-y: auto;
 }
 
-.dg .cr {
-    border-bottom: 1px solid #333 !important;
-    background: transparent !important;
+#pose-window .part {
+    margin-bottom: 15px;
 }
 
-.dg .c {
-    background: transparent !important;
-    border: none !important;
+#pose-window h3 {
+    margin: 0 0 5px 0;
+    font-size: 14px;
 }
 
-.dg .c .name {
-    color: white !important;
-    width: 100px !important;
+#pose-window label {
+    display: block;
+    margin: 3px 0;
+    font-size: 12px;
 }
 
-.dg .c .control {
-    background: #222 !important;
-}
-
-.dg .slider {
-    background: #333 !important;
-    border-radius: 4px !important;
-}
-
-.dg .slider-fg {
-    background: #4CAF50 !important;
-}
-
-.dg .checkbox {
-    background: #222 !important;
-}
-
-.dg .checkbox .control {
-    background: #333 !important;
-}
-
-.dg input, .dg select {
-    background: #222 !important;
-    color: white !important;
-    border: 1px solid #444 !important;
-}
-
-.dg .save-row {
-    background: #222 !important;
+#pose-window input[type="range"] {
+    width: 150px;
 }
 
 /* Timeline */
