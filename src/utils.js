@@ -26,12 +26,23 @@ export function captureThumbnail(scene, camera, renderer) {
   const originalWidth = renderer.domElement.width;
   const originalHeight = renderer.domElement.height;
   const originalAspect = camera.aspect;
+  const originalPosition = camera.position.clone();
+  const originalRotation = camera.rotation.clone();
+  const originalUp = camera.up.clone();
+  const originalZoom = camera.zoom;
 
   // Set to portrait (slimmer, taller)
   const thumbWidth = 200;
   const thumbHeight = 320;
   renderer.setSize(thumbWidth, thumbHeight);
   camera.aspect = thumbWidth / thumbHeight;
+  camera.updateProjectionMatrix();
+
+  // Reset to fixed front view: centered on model (x=0, y=1, z=0), looking at center
+  camera.position.set(0, 1, 2); // Front view
+  camera.lookAt(0, 1, 0); // Target model center
+  camera.up.set(0, 1, 0); // Standard up
+  camera.zoom = 1; // Reset zoom
   camera.updateProjectionMatrix();
 
   // Render and capture
@@ -41,6 +52,10 @@ export function captureThumbnail(scene, camera, renderer) {
   // Restore original
   renderer.setSize(originalWidth, originalHeight);
   camera.aspect = originalAspect;
+  camera.position.copy(originalPosition);
+  camera.rotation.copy(originalRotation);
+  camera.up.copy(originalUp);
+  camera.zoom = originalZoom;
   camera.updateProjectionMatrix();
 
   return dataUrl;

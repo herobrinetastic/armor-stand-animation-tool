@@ -75,6 +75,11 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
   const animation = { playing: false, tempo: 1, keyframes: [], kfIndex: 0, currentTime: 0 };
   const animFolder = addAnimationFolder(gui, animation, pose, updatePose, gui, scene, camera, renderer);
 
+  // Add 1 default keyframe on init
+  animFolder.actions.add();
+  animFolder.actions.loadCurrent();
+  animFolder.updateTimeline();
+
   gui.hide();
   const togglePoseBtn = document.getElementById('toggle-pose-btn');
   let poseVisible = false;
@@ -107,8 +112,6 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
       gui.updateDisplay();
     }
   });
-
-  animFolder.updateTimeline();
 
   return { gui, pose, updatePose, animation, updateTimeline: animFolder.updateTimeline };
 }
