@@ -33,7 +33,6 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
     groups.rightLegGroup.rotation.set(THREE.MathUtils.degToRad(pose.rightLegX), THREE.MathUtils.degToRad(pose.rightLegY), THREE.MathUtils.degToRad(pose.rightLegZ));
   }
 
-  // Pose folders (original logic)
   const headFolder = gui.addFolder('Head');
   headFolder.add(pose, 'headX', -180, 180, 0.1).onChange(updatePose);
   headFolder.add(pose, 'headY', -180, 180, 0.1).onChange(updatePose);
@@ -76,7 +75,6 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
   const animation = { playing: false, tempo: 1, keyframes: [], kfIndex: 0, currentTime: 0 };
   const animFolder = addAnimationFolder(gui, animation, pose, updatePose, gui, scene, camera, renderer);
 
-  // Toggle logic (moved from script.js)
   gui.hide();
   const togglePoseBtn = document.getElementById('toggle-pose-btn');
   let poseVisible = false;
@@ -91,7 +89,6 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
     }
   });
 
-  // Gizmo sync (moved from script.js)
   transformControls.addEventListener('objectChange', () => {
     if (transformControls.object) {
       const group = transformControls.object;
