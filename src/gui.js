@@ -1,80 +1,116 @@
-// gui.js
-import * as THREE from 'three';
-import { addLimbFolder } from './pose.js';
+// src/gui.js
 import { addAnimationFolder } from './animation.js';
-import { createVisualizer } from './visualizer.js';
+import { updateVisualizer } from './commands.js'; // Updated to new file
 
-export function initGUI(groups, scene, camera) {
+export function initGUI(groups, scene, camera, transformControls) {
   const gui = new dat.GUI({ width: 320 });
-  gui.domElement.style.fontSize = '13px';
-  gui.domElement.style.userSelect = 'none';
+  gui.domElement.style.position = 'absolute';
+  gui.domElement.style.top = '60px';
+  gui.domElement.style.left = '10px';
 
   const pose = {
-    headX:0, headY:0, headZ:0, bodyX:0, bodyY:0, bodyZ:0,
-    leftArmX:0, leftArmY:0, leftArmZ:0,
-    rightArmX:0, rightArmY:0, rightArmZ:0,
-    leftLegX:0, leftLegY:0, leftLegZ:0,
-    rightLegX:0, rightLegY:0, rightLegZ:0
+    headX: 0, headY: 0, headZ: 0,
+    bodyX: 0, bodyY: 0, bodyZ: 0,
+    leftArmX: 0, leftArmY: 0, leftArmZ: 0,
+    rightArmX: 0, rightArmY: 0, rightArmZ: 0,
+    leftLegX: 0, leftLegY: 0, leftLegZ: 0,
+    rightLegX: 0, rightLegY: 0, rightLegZ: 0,
+    showArms: true,
+    noBasePlate: false,
+    small: false,
+    invisible: false,
+    customNameVisible: false,
+    noGravity: false,
+    marker: false
   };
 
-  const animation = {
-    playing: false, tempo: 1, keyframes: [], kfIndex: 0
-  };
-
-  function applyPose() {
-    const parts = [
-      ['headGroup','headX','headY','headZ'],
-      ['bodyGroup','bodyX','bodyY','bodyZ'],
-      ['leftArmGroup','leftArmX','leftArmY','leftArmZ'],
-      ['rightArmGroup','rightArmX','rightArmY','rightArmZ'],
-      ['leftLegGroup','leftLegX','leftLegY','leftLegZ'],
-      ['rightLegGroup','rightLegX','rightLegY','rightLegZ']
-    ];
-    parts.forEach(([g,x,y,z]) => groups[g].rotation.set(
-      THREE.MathUtils.degToRad(pose[x]),
-      THREE.MathUtils.degToRad(pose[y]),
-      THREE.MathUtils.degToRad(pose[z]), 'XYZ'
-    ));
+  function updatePose() {
+    groups.headGroup.rotation.set(THREE.MathUtils.degToRad(pose.headX), THREE.MathUtils.degToRad(pose.headY), THREE.MathUtils.degToRad(pose.headZ));
+    groups.bodyGroup.rotation.set(THREE.MathUtils.degToRad(pose.bodyX), THREE.MathUtils.degToRad(pose.bodyY), THREE.MathUtils.degToRad(pose.bodyZ));
+    groups.leftArmGroup.rotation.set(THREE.MathUtils.degToRad(pose.leftArmX), THREE.MathUtils.degToRad(pose.leftArmY), THREE.MathUtils.degToRad(pose.leftArmZ));
+    groups.rightArmGroup.rotation.set(THREE.MathUtils.degToRad(pose.rightArmX), THREE.MathUtils.degToRad(pose.rightArmY), THREE.MathUtils.degToRad(pose.rightArmZ));
+    groups.leftLegGroup.rotation.set(THREE.MathUtils.degToRad(pose.leftLegX), THREE.MathUtils.degToRad(pose.leftLegY), THREE.MathUtils.degToRad(pose.leftLegZ));
+    groups.rightLegGroup.rotation.set(THREE.MathUtils.degToRad(pose.rightLegX), THREE.MathUtils.degToRad(pose.rightLegY), THREE.MathUtils.degToRad(pose.rightLegZ));
+    updateVisualizer();
   }
 
-  // 1. Limbs
-  addLimbFolder(gui, pose, applyPose, 'Head',      'headX',     'headY',     'headZ');
-  addLimbFolder(gui, pose, applyPose, 'Body',      'bodyX',     'bodyY',     'bodyZ');
-  addLimbFolder(gui, pose, applyPose, 'Left Arm',  'leftArmX',  'leftArmY',  'leftArmZ');
-  addLimbFolder(gui, pose, applyPose, 'Right Arm', 'rightArmX', 'rightArmY', 'rightArmZ');
-  addLimbFolder(gui, pose, applyPose, 'Left Leg',  'leftLegX',  'leftLegY',  'leftLegZ');
-  addLimbFolder(gui, pose, applyPose, 'Right Leg', 'rightLegX', 'rightLegY', 'rightLegZ');
+  // Pose folders (original logic)
+  const headFolder = gui.addFolder('Head');
+  headFolder.add(pose, 'headX', -180, 180, 0.1).onChange(updatePose);
+  headFolder.add(pose, 'headY', -180, 180, 0.1).onChange(updatePose);
+  headFolder.add(pose, 'headZ', -180, 180, 0.1).onChange(updatePose);
 
-  // 2. Animation folder (with placeholder updateVisualizer)
-  const { kfSlider, refreshKfSlider, actions } = addAnimationFolder(gui, animation, pose, applyPose, gui, () => {});
+  const bodyFolder = gui.addFolder('Body');
+  bodyFolder.add(pose, 'bodyX', -180, 180, 0.1).onChange(updatePose);
+  bodyFolder.add(pose, 'bodyY', -180, 180, 0.1).onChange(updatePose);
+  bodyFolder.add(pose, 'bodyZ', -180, 180, 0.1).onChange(updatePose);
 
-  // 3. Visualizer (now actions exist)
-  const { updateVisualizer } = createVisualizer(animation, actions, refreshKfSlider, scene, camera, pose, applyPose);
+  const leftArmFolder = gui.addFolder('Left Arm');
+  leftArmFolder.add(pose, 'leftArmX', -180, 180, 0.1).onChange(updatePose);
+  leftArmFolder.add(pose, 'leftArmY', -180, 180, 0.1).onChange(updatePose);
+  leftArmFolder.add(pose, 'leftArmZ', -180, 180, 0.1).onChange(updatePose);
 
-  // 4. Inject real updateVisualizer into actions
-  ['add','insert','save','delete','clear','loadFile'].forEach(method => {
-    const original = actions[method];
-    actions[method] = function(...args) {
-      original.apply(this, args);
-      updateVisualizer();
-    };
+  const rightArmFolder = gui.addFolder('Right Arm');
+  rightArmFolder.add(pose, 'rightArmX', -180, 180, 0.1).onChange(updatePose);
+  rightArmFolder.add(pose, 'rightArmY', -180, 180, 0.1).onChange(updatePose);
+  rightArmFolder.add(pose, 'rightArmZ', -180, 180, 0.1).onChange(updatePose);
+
+  const leftLegFolder = gui.addFolder('Left Leg');
+  leftLegFolder.add(pose, 'leftLegX', -180, 180, 0.1).onChange(updatePose);
+  leftLegFolder.add(pose, 'leftLegY', -180, 180, 0.1).onChange(updatePose);
+  leftLegFolder.add(pose, 'leftLegZ', -180, 180, 0.1).onChange(updatePose);
+
+  const rightLegFolder = gui.addFolder('Right Leg');
+  rightLegFolder.add(pose, 'rightLegX', -180, 180, 0.1).onChange(updatePose);
+  rightLegFolder.add(pose, 'rightLegY', -180, 180, 0.1).onChange(updatePose);
+  rightLegFolder.add(pose, 'rightLegZ', -180, 180, 0.1).onChange(updatePose);
+
+  const propertiesFolder = gui.addFolder('Properties');
+  propertiesFolder.add(pose, 'showArms').onChange(updateVisualizer);
+  propertiesFolder.add(pose, 'noBasePlate').onChange(updateVisualizer);
+  propertiesFolder.add(pose, 'small').onChange(updateVisualizer);
+  propertiesFolder.add(pose, 'invisible').onChange(updateVisualizer);
+  propertiesFolder.add(pose, 'customNameVisible').onChange(updateVisualizer);
+  propertiesFolder.add(pose, 'noGravity').onChange(updateVisualizer);
+  propertiesFolder.add(pose, 'marker').onChange(updateVisualizer);
+
+  const animation = { playing: false, tempo: 1, keyframes: [], kfIndex: 0, currentTime: 0 };
+  const animFolder = addAnimationFolder(gui, animation, pose, updatePose, gui, updateVisualizer);
+
+  // Toggle logic (moved from script.js)
+  gui.hide();
+  const togglePoseBtn = document.getElementById('toggle-pose-btn');
+  let poseVisible = false;
+  togglePoseBtn.addEventListener('click', () => {
+    poseVisible = !poseVisible;
+    if (poseVisible) {
+      gui.show();
+      togglePoseBtn.textContent = 'Hide Posing Controls';
+    } else {
+      gui.hide();
+      togglePoseBtn.textContent = 'Posing Controls';
+    }
   });
 
-  // Export button
-  gui.add({
-    export() {
-      const f = n => Number(n).toFixed(3);
-      const cmd = `/summon armor_stand ~ ~ ~ {ShowArms:1b,Pose:{Head:[${f(pose.headX)}f,${f(pose.headY)}f,${f(pose.headZ)}f],Body:[${f(pose.bodyX)}f,${f(pose.bodyY)}f,${f(pose.bodyZ)}f],LeftArm:[${f(pose.leftArmX)}f,${f(pose.leftArmY)}f,${f(pose.leftArmZ)}f],RightArm:[${f(pose.rightArmX)}f,${f(pose.rightArmY)}f,${f(pose.rightArmZ)}f],LeftLeg:[${f(pose.leftLegX)}f,${f(pose.leftLegY)}f,${f(pose.leftLegZ)}f],RightLeg:[${f(pose.rightLegX)}f,${f(pose.rightLegY)}f,${f(pose.rightLegZ)}f]}}`;
-      navigator.clipboard.writeText(cmd).then(() => alert(cmd));
+  // Gizmo sync (moved from script.js)
+  transformControls.addEventListener('objectChange', () => {
+    if (transformControls.object) {
+      const group = transformControls.object;
+      const rot = group.rotation;
+      const degX = THREE.MathUtils.radToDeg(rot.x);
+      const degY = THREE.MathUtils.radToDeg(rot.y);
+      const degZ = THREE.MathUtils.radToDeg(rot.z);
+      switch (group.name) {
+        case 'headGroup': pose.headX = degX; pose.headY = degY; pose.headZ = degZ; break;
+        case 'bodyGroup': pose.bodyX = degX; pose.bodyY = degY; pose.bodyZ = degZ; break;
+        case 'leftArmGroup': pose.leftArmX = degX; pose.leftArmY = degY; pose.leftArmZ = degZ; break;
+        case 'rightArmGroup': pose.rightArmX = degX; pose.rightArmY = degY; pose.rightArmZ = degZ; break;
+        case 'leftLegGroup': pose.leftLegX = degX; pose.leftLegY = degY; pose.leftLegZ = degZ; break;
+        case 'rightLegGroup': pose.rightLegX = degX; pose.rightLegY = degY; pose.rightLegZ = degZ; break;
+      }
+      gui.updateDisplay();
     }
-  }, 'export').name('Export /copy');
+  });
 
-  // Add default keyframe
-  animation.keyframes.push({ ...pose });
-  animation.kfIndex = 0;
-  refreshKfSlider();
-  updateVisualizer();
-
-  applyPose();
-  return { gui, pose, updatePose: applyPose, animation, updateVisualizer };
+  return { gui, pose, updatePose, animation, updateVisualizer };
 }
