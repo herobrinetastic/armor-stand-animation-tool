@@ -44,6 +44,19 @@ createArmorStand(armorStand).then(groups => {
     const sliders = document.querySelectorAll('#pose-window .rotation');
     sliders.forEach(sl => sl.value = 0);
   });
+
+  // Pose content toggle listener
+  document.getElementById('toggle-pose-content').addEventListener('click', () => {
+    const content = document.getElementById('pose-content');
+    const toggleBtn = document.getElementById('toggle-pose-content');
+    if (content.style.display === 'none') {
+      content.style.display = 'block';
+      toggleBtn.textContent = '−';
+    } else {
+      content.style.display = 'none';
+      toggleBtn.textContent = '+';
+    }
+  });
 });
 
 window.addEventListener('resize', () => {
