@@ -1,0 +1,5 @@
+// src/commands.js
+export function updateVisualizer(pose) {
+  const command = `/summon armor_stand ~ ~ ~ {Pose:{Head:[${pose.headX}f,${pose.headY}f,${pose.headZ}f],Body:[${pose.bodyX}f,${pose.bodyY}f,${pose.bodyZ}f],LeftArm:[${pose.leftArmX}f,${pose.leftArmY}f,${pose.leftArmZ}f],RightArm:[${pose.rightArmX}f,${pose.rightArmY}f,${pose.rightArmZ}f],LeftLeg:[${pose.leftLegX}f,${pose.leftLegY}f,${pose.leftLegZ}f],RightLeg:[${pose.rightLegX}f,${pose.rightLegY}f,${pose.rightLegZ}f]},ShowArms:${pose.showArms ? 1 : 0},NoBasePlate:${pose.noBasePlate ? 1 : 0},Small:${pose.small ? 1 : 0},Invisible:${pose.invisible ? 1 : 0},CustomNameVisible:${pose.customNameVisible ? 1 : 0},NoGravity:${pose.noGravity ? 1 : 0},Marker:${pose.marker ? 1 : 0}}`;
+  document.getElementById('command-output').textContent = command;
+}
