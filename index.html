@@ -1,14 +1,14 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Minecraft Armor Stand 3D</title>
     <style>body { margin: 0; } canvas { display: block; }</style>
-    <link rel="stylesheet" href="animation-ui.css">
+    <link rel="stylesheet" href="styles/animation-ui.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js"></script>
 </head>
 <body>
+    <button id="toggle-pose-btn">Posing Controls</button>
     <div id="animation-window">
         <div class="header">Animation Controls <button id="close-btn">×</button></div>
         <div class="content">
@@ -32,6 +32,6 @@
             }
         }
     </script>
-    <script type="module" src="script.js"></script>
+    <script type="module" src="src/script.js"></script>
 </body>
 </html>

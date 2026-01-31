@@ -1,0 +1,148 @@
+#animation-window {
+    position: absolute;
+    top: 100px;
+    right: 10px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    width: 200px;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    z-index: 10;
+}
+
+.header {
+    font-weight: bold;
+    margin-bottom: 10px;
+    cursor: move;
+    display: flex;
+    justify-content: space-between;
+}
+
+#close-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.content label {
+    display: block;
+    margin: 5px 0;
+}
+
+.content button {
+    display: block;
+    width: 100%;
+    margin: 5px 0;
+    padding: 5px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.content button:hover {
+    background: #555;
+}
+
+.content input[type="range"] {
+    width: 100px;
+}
+
+/* Toggle button */
+#toggle-pose-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 20;
+    padding: 8px 12px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+}
+
+#toggle-pose-btn:hover {
+    background: #555;
+}
+
+/* dat.GUI dark theme (matches animation window) */
+.dg {
+    position: absolute !important;
+    top: 60px !important;
+    left: 10px !important;
+    z-index: 9 !important;
+    background-color: rgba(0,0,0,0.8) !important;
+    color: white !important;
+    border: 1px solid #333 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5) !important;
+    width: 320px !important;
+}
+
+.dg .main {
+    background: transparent !important;
+}
+
+.dg .title {
+    background: #333 !important;
+    color: white !important;
+    border-bottom: 1px solid #444 !important;
+    font-weight: bold !important;
+    padding: 5px 8px !important;
+}
+
+.dg .closed .title {
+    border-bottom: none !important;
+}
+
+.dg .cr {
+    border-bottom: 1px solid #333 !important;
+    background: transparent !important;
+}
+
+.dg .c {
+    background: transparent !important;
+    border: none !important;
+}
+
+.dg .c .name {
+    color: white !important;
+    width: 100px !important;
+}
+
+.dg .c .control {
+    background: #222 !important;
+}
+
+.dg .slider {
+    background: #333 !important;
+    border-radius: 4px !important;
+}
+
+.dg .slider-fg {
+    background: #4CAF50 !important;
+}
+
+.dg .checkbox {
+    background: #222 !important;
+}
+
+.dg .checkbox .control {
+    background: #333 !important;
+}
+
+.dg input, .dg select {
+    background: #222 !important;
+    color: white !important;
+    border: 1px solid #444 !important;
+}
+
+.dg .save-row {
+    background: #222 !important;
+}
