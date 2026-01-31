@@ -26,25 +26,4 @@ export function bindAnimationEvents(animation, pose, applyPose, globalGui) {
     }
     kfValue.textContent = animation.kfIndex;
   });
-
-  // Drag window
-  const window = document.getElementById('animation-window');
-  const header = window.querySelector('.header');
-  header.addEventListener('mousedown', (e) => {
-    let shiftX = e.clientX - window.getBoundingClientRect().left;
-    let shiftY = e.clientY - window.getBoundingClientRect().top;
-    function moveAt(pageX, pageY) {
-      window.style.left = pageX - shiftX + 'px';
-      window.style.top = pageY - shiftY + 'px';
-    }
-    function onMouseMove(e) {
-      moveAt(e.pageX, e.pageY);
-    }
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', () => document.removeEventListener('mousemove', onMouseMove), {once: true});
-  });
-  header.style.cursor = 'move';
-
-  // Close button
-  document.getElementById('close-btn').addEventListener('click', () => window.style.display = 'none');
 }

@@ -3,6 +3,7 @@ import { bindAnimationEvents } from './events.js';
 import { captureThumbnail } from './utils.js';
 
 export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, scene, camera, renderer) {
+  // Bind events
   bindAnimationEvents(animation, pose, applyPose, globalGui);
 
   const kfSlider = document.getElementById('kfIndex');
@@ -100,6 +101,7 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
     }
   };
 
+  // Bind buttons
   document.getElementById('add').addEventListener('click', actions.add);
   document.getElementById('insert').addEventListener('click', actions.insert);
   document.getElementById('save').addEventListener('click', actions.save);
