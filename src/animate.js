@@ -1,18 +1,18 @@
 // src/animate.js
-export function startAnimation(renderer, scene, camera, controls, animation, pose, updatePose, gui, updateVisualizer) {
+export function startAnimation(renderer, scene, camera, controls, animation, pose, updatePose, gui, updateTimeline) {
   let lastTime = 0;
   function animate(time) {
     requestAnimationFrame(animate);
     const delta = (time - lastTime) / 1000;
     lastTime = time;
     controls.update();
-    updateAnimation(animation, pose, updatePose, gui, updateVisualizer, delta);
+    updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta);
     renderer.render(scene, camera);
   }
   animate(0);
 }
 
-function updateAnimation(animation, pose, updatePose, gui, updateVisualizer, delta) {
+function updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta) {
   if (!animation.playing || animation.keyframes.length < 2) return;
 
   animation.currentTime += delta;
@@ -32,5 +32,5 @@ function updateAnimation(animation, pose, updatePose, gui, updateVisualizer, del
   Object.assign(pose, poseData);
   updatePose();
   gui.updateDisplay();
-  updateVisualizer(pose);
+  updateTimeline();
 }

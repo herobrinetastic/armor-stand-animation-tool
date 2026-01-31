@@ -20,3 +20,8 @@ export function createMesh(geometry, material) {
   geometry.attributes.uv.needsUpdate = true;
   return mesh;
 }
+
+export function captureThumbnail(scene, camera, renderer) {
+  renderer.render(scene, camera);
+  return renderer.domElement.toDataURL('image/png');
+}

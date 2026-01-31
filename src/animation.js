@@ -1,9 +1,10 @@
 // src/animation.js
 import { bindAnimationEvents } from './events.js';
+import { captureThumbnail } from './utils.js';
 
-export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, updateVisualizer) {
+export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, scene, camera, renderer) {
   // Bind events
-  bindAnimationEvents(animation, pose, applyPose, globalGui, updateVisualizer);
+  bindAnimationEvents(animation, pose, applyPose, globalGui);
 
   const kfSlider = document.getElementById('kfIndex');
   const kfValue = document.getElementById('kfIndex-value');
@@ -16,18 +17,24 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, u
 
   const actions = {
     add() {
-      animation.keyframes.push({ ...pose });
+      const thumbnail = captureThumbnail(scene, camera, renderer);
+      animation.keyframes.push({ ...pose, thumbnail });
       animation.kfIndex = animation.keyframes.length - 1;
       refreshKfSlider();
+      updateTimeline();
     },
     insert() {
-      animation.keyframes.splice(animation.kfIndex + 1, 0, { ...pose });
+      const thumbnail = captureThumbnail(scene, camera, renderer);
+      animation.keyframes.splice(animation.kfIndex + 1, 0, { ...pose, thumbnail });
       animation.kfIndex++;
       refreshKfSlider();
+      updateTimeline();
     },
     save() {
       if (animation.keyframes.length) {
-        animation.keyframes[animation.kfIndex] = { ...pose };
+        const thumbnail = captureThumbnail(scene, camera, renderer);
+        animation.keyframes[animation.kfIndex] = { ...pose, thumbnail };
+        updateTimeline();
       }
     },
     delete() {
@@ -36,12 +43,14 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, u
         animation.kfIndex = Math.min(animation.kfIndex, animation.keyframes.length - 1);
         refreshKfSlider();
         actions.loadCurrent();
+        updateTimeline();
       }
     },
     clear() {
       animation.keyframes = [];
       animation.kfIndex = 0;
       refreshKfSlider();
+      updateTimeline();
     },
     saveFile() {
       const data = JSON.stringify({ tempo: animation.tempo, keyframes: animation.keyframes }, null, 2);
@@ -63,10 +72,18 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, u
             const d = JSON.parse(ev.target.result);
             animation.tempo = d.tempo ?? 1;
             animation.keyframes = d.keyframes ?? [];
+            animation.keyframes.forEach(kf => {
+              if (!kf.thumbnail) {
+                Object.assign(pose, kf);
+                applyPose();
+                kf.thumbnail = captureThumbnail(scene, camera, renderer);
+              }
+            });
             animation.kfIndex = 0;
             refreshKfSlider();
             actions.loadCurrent();
             globalGui.updateDisplay();
+            updateTimeline();
           } catch {
             alert('Invalid file');
           }
@@ -80,7 +97,6 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, u
         Object.assign(pose, animation.keyframes[animation.kfIndex]);
         applyPose();
         globalGui.updateDisplay();
-        updateVisualizer(pose);
       }
     }
   };
@@ -94,5 +110,21 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, u
   document.getElementById('saveFile').addEventListener('click', actions.saveFile);
   document.getElementById('loadFile').addEventListener('click', actions.loadFile);
 
-  return { kfSlider, refreshKfSlider, actions };
+  const updateTimeline = () => {
+    const timeline = document.getElementById('timeline');
+    timeline.innerHTML = '';
+    animation.keyframes.forEach((kf, i) => {
+      const img = document.createElement('img');
+      img.src = kf.thumbnail || '';
+      img.onclick = () => {
+        animation.kfIndex = i;
+        refreshKfSlider();
+        actions.loadCurrent();
+      };
+      if (i === animation.kfIndex) img.classList.add('active');
+      timeline.appendChild(img);
+    });
+  };
+
+  return { kfSlider, refreshKfSlider, actions, updateTimeline };
 }

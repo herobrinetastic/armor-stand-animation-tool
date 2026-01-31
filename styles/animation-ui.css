@@ -146,3 +146,26 @@
 .dg .save-row {
     background: #222 !important;
 }
+
+/* Timeline */
+.timeline {
+    display: flex;
+    overflow-x: auto;
+    margin-top: 10px;
+    padding: 5px;
+    background: #222;
+    border-radius: 4px;
+}
+
+.timeline img {
+    width: 50px;
+    height: 50px;
+    margin-right: 5px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 4px;
+}
+
+.timeline img.active {
+    border-color: white;
+}

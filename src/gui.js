@@ -1,9 +1,8 @@
 // src/gui.js
 import * as THREE from 'three';
 import { addAnimationFolder } from './animation.js';
-import { updateVisualizer } from './commands.js'; // Updated to new file
 
-export function initGUI(groups, scene, camera, transformControls) {
+export function initGUI(groups, scene, camera, transformControls, renderer) {
   const gui = new dat.GUI({ width: 320 });
   gui.domElement.style.position = 'absolute';
   gui.domElement.style.top = '60px';
@@ -32,7 +31,6 @@ export function initGUI(groups, scene, camera, transformControls) {
     groups.rightArmGroup.rotation.set(THREE.MathUtils.degToRad(pose.rightArmX), THREE.MathUtils.degToRad(pose.rightArmY), THREE.MathUtils.degToRad(pose.rightArmZ));
     groups.leftLegGroup.rotation.set(THREE.MathUtils.degToRad(pose.leftLegX), THREE.MathUtils.degToRad(pose.leftLegY), THREE.MathUtils.degToRad(pose.leftLegZ));
     groups.rightLegGroup.rotation.set(THREE.MathUtils.degToRad(pose.rightLegX), THREE.MathUtils.degToRad(pose.rightLegY), THREE.MathUtils.degToRad(pose.rightLegZ));
-    updateVisualizer(pose);
   }
 
   // Pose folders (original logic)
@@ -58,7 +56,7 @@ export function initGUI(groups, scene, camera, transformControls) {
 
   const leftLegFolder = gui.addFolder('Left Leg');
   leftLegFolder.add(pose, 'leftLegX', -180, 180, 0.1).onChange(updatePose);
-  leftArmFolder.add(pose, 'leftLegY', -180, 180, 0.1).onChange(updatePose);
+  leftLegFolder.add(pose, 'leftLegY', -180, 180, 0.1).onChange(updatePose);
   leftLegFolder.add(pose, 'leftLegZ', -180, 180, 0.1).onChange(updatePose);
 
   const rightLegFolder = gui.addFolder('Right Leg');
@@ -67,16 +65,16 @@ export function initGUI(groups, scene, camera, transformControls) {
   rightLegFolder.add(pose, 'rightLegZ', -180, 180, 0.1).onChange(updatePose);
 
   const propertiesFolder = gui.addFolder('Properties');
-  propertiesFolder.add(pose, 'showArms').onChange(() => updateVisualizer(pose));
-  propertiesFolder.add(pose, 'noBasePlate').onChange(() => updateVisualizer(pose));
-  propertiesFolder.add(pose, 'small').onChange(() => updateVisualizer(pose));
-  propertiesFolder.add(pose, 'invisible').onChange(() => updateVisualizer(pose));
-  propertiesFolder.add(pose, 'customNameVisible').onChange(() => updateVisualizer(pose));
-  propertiesFolder.add(pose, 'noGravity').onChange(() => updateVisualizer(pose));
-  propertiesFolder.add(pose, 'marker').onChange(() => updateVisualizer(pose));
+  propertiesFolder.add(pose, 'showArms');
+  propertiesFolder.add(pose, 'noBasePlate');
+  propertiesFolder.add(pose, 'small');
+  propertiesFolder.add(pose, 'invisible');
+  propertiesFolder.add(pose, 'customNameVisible');
+  propertiesFolder.add(pose, 'noGravity');
+  propertiesFolder.add(pose, 'marker');
 
   const animation = { playing: false, tempo: 1, keyframes: [], kfIndex: 0, currentTime: 0 };
-  addAnimationFolder(gui, animation, pose, updatePose, gui, (pose) => updateVisualizer(pose));
+  const animFolder = addAnimationFolder(gui, animation, pose, updatePose, gui, scene, camera, renderer);
 
   // Toggle logic (moved from script.js)
   gui.hide();
@@ -113,7 +111,7 @@ export function initGUI(groups, scene, camera, transformControls) {
     }
   });
 
-  updateVisualizer(pose); // Initial call
+  animFolder.updateTimeline();
 
-  return { gui, pose, updatePose, animation, updateVisualizer: (pose) => updateVisualizer(pose) };
+  return { gui, pose, updatePose, animation, updateTimeline: animFolder.updateTimeline };
 }

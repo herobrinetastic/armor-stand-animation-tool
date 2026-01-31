@@ -1,5 +1,5 @@
 // src/events.js
-export function bindAnimationEvents(animation, pose, applyPose, globalGui, updateVisualizer) {
+export function bindAnimationEvents(animation, pose, applyPose, globalGui) {
   document.getElementById('playing').checked = animation.playing;
   document.getElementById('playing').addEventListener('change', (e) => { 
     animation.playing = e.target.checked; 
@@ -23,7 +23,6 @@ export function bindAnimationEvents(animation, pose, applyPose, globalGui, updat
       Object.assign(pose, animation.keyframes[animation.kfIndex]);
       applyPose();
       globalGui.updateDisplay();
-      updateVisualizer(pose);
     }
     kfValue.textContent = animation.kfIndex;
   });
