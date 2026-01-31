@@ -1,22 +1,32 @@
 // animation.js
 export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, updateVisualizer) {
-  const anim = gui.addFolder('Animation');
-  anim.add(animation, 'playing').name('Play / Pause').listen();
-  anim.add(animation, 'tempo', 0.1, 10, 0.1).name('Speed (fps)');
-  
-  const kfSlider = anim.add(animation, 'kfIndex', 0, 0, 1)
-                      .name('Keyframe')
-                      .listen()
-                      .onChange(() => {
-                        if (animation.keyframes.length) {
-                          Object.assign(pose, animation.keyframes[animation.kfIndex]);
-                          applyPose();
-                          globalGui.updateDisplay();
-                        }
-                      });
+  // No folder - use custom UI
+  document.getElementById('playing').checked = animation.playing;
+  document.getElementById('playing').addEventListener('change', () => animation.playing = this.checked);
+
+  document.getElementById('tempo').value = animation.tempo;
+  document.getElementById('tempo-value').textContent = animation.tempo;
+  document.getElementById('tempo').addEventListener('input', () => {
+    animation.tempo = parseFloat(this.value);
+    document.getElementById('tempo-value').textContent = animation.tempo.toFixed(1);
+  });
+
+  const kfSlider = document.getElementById('kfIndex');
+  const kfValue = document.getElementById('kfIndex-value');
+  kfSlider.addEventListener('input', () => {
+    animation.kfIndex = parseInt(this.value);
+    if (animation.keyframes.length) {
+      Object.assign(pose, animation.keyframes[animation.kfIndex]);
+      applyPose();
+      globalGui.updateDisplay();
+    }
+    kfValue.textContent = animation.kfIndex;
+  });
 
   function refreshKfSlider() {
-    kfSlider.min(0).max(Math.max(0, animation.keyframes.length-1)).updateDisplay();
+    kfSlider.max = Math.max(0, animation.keyframes.length - 1);
+    kfSlider.value = animation.kfIndex;
+    kfValue.textContent = animation.kfIndex;
   }
 
   const actions = {
@@ -24,18 +34,15 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, u
       animation.keyframes.push({ ...pose });
       animation.kfIndex = animation.keyframes.length - 1;
       refreshKfSlider();
-      updateVisualizer();
     },
     insert() {
       animation.keyframes.splice(animation.kfIndex + 1, 0, { ...pose });
       animation.kfIndex++;
       refreshKfSlider();
-      updateVisualizer();
     },
     save() {
       if (animation.keyframes.length) {
         animation.keyframes[animation.kfIndex] = { ...pose };
-        updateVisualizer();
       }
     },
     delete() {
@@ -44,14 +51,12 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, u
         animation.kfIndex = Math.min(animation.kfIndex, animation.keyframes.length - 1);
         refreshKfSlider();
         actions.loadCurrent();
-        updateVisualizer();
       }
     },
     clear() {
       animation.keyframes = [];
       animation.kfIndex = 0;
       refreshKfSlider();
-      updateVisualizer();
     },
     saveFile() {
       const data = JSON.stringify({ tempo: animation.tempo, keyframes: animation.keyframes }, null, 2);
@@ -77,7 +82,6 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, u
             refreshKfSlider();
             actions.loadCurrent();
             globalGui.updateDisplay();
-            updateVisualizer();
           } catch {
             alert('Invalid file');
           }
@@ -95,13 +99,35 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, u
     }
   };
 
-  anim.add(actions, 'add').name('+ Add');
-  anim.add(actions, 'insert').name('↳ Insert');
-  anim.add(actions, 'save').name('Save current');
-  anim.add(actions, 'delete').name('− Delete');
-  anim.add(actions, 'clear').name('Clear all');
-  anim.add(actions, 'saveFile').name('↓ Save .json');
-  anim.add(actions, 'loadFile').name('↑ Load .json');
+  // Bind buttons
+  document.getElementById('add').addEventListener('click', actions.add);
+  document.getElementById('insert').addEventListener('click', actions.insert);
+  document.getElementById('save').addEventListener('click', actions.save);
+  document.getElementById('delete').addEventListener('click', actions.delete);
+  document.getElementById('clear').addEventListener('click', actions.clear);
+  document.getElementById('saveFile').addEventListener('click', actions.saveFile);
+  document.getElementById('loadFile').addEventListener('click', actions.loadFile);
 
-  return { anim, kfSlider, refreshKfSlider, actions };
+  // Drag window
+  const window = document.getElementById('animation-window');
+  const header = window.querySelector('.header');
+  header.addEventListener('mousedown', (e) => {
+    let shiftX = e.clientX - window.getBoundingClientRect().left;
+    let shiftY = e.clientY - window.getBoundingClientRect().top;
+    function moveAt(pageX, pageY) {
+      window.style.left = pageX - shiftX + 'px';
+      window.style.top = pageY - shiftY + 'px';
+    }
+    function onMouseMove(e) {
+      moveAt(e.pageX, e.pageY);
+    }
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', () => document.removeEventListener('mousemove', onMouseMove), {once: true});
+  });
+  header.style.cursor = 'move';
+
+  // Close button
+  document.getElementById('close-btn').addEventListener('click', () => window.style.display = 'none');
+
+  return { kfSlider, refreshKfSlider, actions };
 }
