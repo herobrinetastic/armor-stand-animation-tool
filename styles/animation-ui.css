@@ -143,7 +143,9 @@ body {
     cursor: pointer;
     font-family: Arial, sans-serif;
     width: 30px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 16px;
 }
 
@@ -155,17 +157,17 @@ body {
 #tempo-label {
     position: absolute;
     bottom: 12px;
-    left: 50px;
+    left: 55px;
     z-index: 20;
     background: rgba(0,0,0,0.8);
-    padding: 4px 8px;
+    padding: 4px 6px;
     border-radius: 4px;
     font-size: 12px;
     white-space: nowrap;
 }
 
 #tempo-label input[type="range"] {
-    width: 80px;
+    width: 60px;
     margin: 0 5px;
 }
 
