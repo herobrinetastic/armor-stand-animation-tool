@@ -157,7 +157,7 @@ body {
 #tempo-label {
     position: absolute;
     bottom: 12px;
-    left: 55px;
+    left: 50px;
     z-index: 20;
     background: rgba(0,0,0,0.8);
     padding: 4px 6px;
@@ -169,6 +169,33 @@ body {
 #tempo-label input[type="range"] {
     width: 60px;
     margin: 0 5px;
+    -webkit-appearance: none;
+    height: 5px;
+    background: #222;
+    border-radius: 5px;
+}
+
+#tempo-label input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    background: #555;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#tempo-label input[type="range"]::-moz-range-track {
+    height: 5px;
+    background: #222;
+    border-radius: 5px;
+}
+
+#tempo-label input[type="range"]::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    background: #555;
+    border-radius: 50%;
+    cursor: pointer;
 }
 
 #tempo-label span {
@@ -217,9 +244,9 @@ body {
     background: rgba(0,0,0,0.8);
     color: white;
     border: none;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    border-radius: 4px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -229,6 +256,11 @@ body {
 
 #play-pause-btn:hover {
     background: #555;
+}
+
+#play-pause-btn img {
+  width: 28px;
+  height: 28px;
 }
 
 /* Pose window */
