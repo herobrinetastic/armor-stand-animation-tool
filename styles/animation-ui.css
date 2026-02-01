@@ -2,7 +2,6 @@ body {
     background: #111;
     color: white;
     font-family: Arial, sans-serif;
-    overflow: hidden; /* Fix whole app scroll */
 }
 
 #ui-grid {
@@ -11,7 +10,6 @@ body {
     grid-template-rows: 1fr 100px; /* Bottom fixed height */
     height: 100vh;
     width: 100vw;
-    overflow: hidden; /* Fix whole app scroll */
 }
 
 #left-window {
@@ -27,11 +25,13 @@ body {
     position: relative;
     padding: 10px;
     overflow: hidden; /* No scroll */
+    pointer-events: auto; /* Fix orbit camera mouse events */
 }
 
 #model-container {
     height: 100%;
     width: 100%;
+    pointer-events: auto; /* Fix orbit camera mouse events */
 }
 
 #right-window {

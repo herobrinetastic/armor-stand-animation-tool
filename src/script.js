@@ -8,8 +8,14 @@ import { initGUI } from './gui.js';
 import { startAnimation } from './animate.js';
 import { captureThumbnail } from './utils.js';
 
+const container = document.getElementById('model-container');
 const { scene, camera, renderer, controls, armorStand } = initScene();
-document.getElementById('model-container').appendChild(renderer.domElement); // Append canvas to center window
+container.appendChild(renderer.domElement);
+
+// Initial size to container
+renderer.setSize(container.clientWidth, container.clientHeight);
+camera.aspect = container.clientWidth / container.clientHeight;
+camera.updateProjectionMatrix();
 
 const transformControls = initTransformControls(scene, camera, renderer, controls);
 createArmorStand(armorStand).then(groups => {
@@ -47,7 +53,7 @@ createArmorStand(armorStand).then(groups => {
 });
 
 window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
 });
