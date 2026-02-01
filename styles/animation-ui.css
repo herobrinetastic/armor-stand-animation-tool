@@ -129,6 +129,25 @@ body {
     background: #555;
 }
 
+/* Add keyframe button */
+#add {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 20;
+    padding: 8px 12px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+}
+
+#add:hover {
+    background: #555;
+}
+
 /* Pose window */
 #pose-window .part {
     margin-bottom: 15px;
