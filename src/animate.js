@@ -20,8 +20,8 @@ function updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta
   const frameDuration = 1 / animation.tempo;          // seconds per keyframe
   const totalDuration = animation.keyframes.length * frameDuration;
 
-  const timeMod = animation.currentTime % totalDuration;
-  const frameIndex = Math.floor(timeMod / frameDuration);
+  const time = animation.currentTime % totalDuration;
+  const frameIndex = Math.floor(time / frameDuration);
 
   const poseData = animation.keyframes[frameIndex];
 
@@ -31,6 +31,14 @@ function updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta
 
   Object.assign(pose, poseData);
   updatePose();
-  gui.updateDisplay();
+  if (gui) gui.updateDisplay();
   updateTimeline();
+
+  // Update sliders during animation
+  const sliders = document.querySelectorAll('#pose-window .rotation');
+  sliders.forEach(sl => {
+    const part = sl.dataset.part;
+    const axis = sl.dataset.axis.toUpperCase();
+    sl.value = pose[`${part}${axis}`] || 0;
+  });
 }

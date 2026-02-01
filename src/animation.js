@@ -82,7 +82,6 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
             animation.kfIndex = 0;
             refreshKfSlider();
             actions.loadCurrent();
-            globalGui.updateDisplay();
             updateTimeline();
           } catch {
             alert('Invalid file');
@@ -96,7 +95,6 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
       if (animation.keyframes.length) {
         Object.assign(pose, animation.keyframes[animation.kfIndex]);
         applyPose();
-        globalGui.updateDisplay();
       }
     }
   };

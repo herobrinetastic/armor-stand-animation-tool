@@ -1,57 +1,68 @@
-// selection.js
+// src/selection.js
 import * as THREE from 'three';
 
-export function initSelection(camera, transformControls, groups) {
-    const selectableGroups = Object.values(groups);
-    let selectedLimb = null;
-    function highlight(group) {
-        group.children.forEach((child) => {
-            if (child instanceof THREE.Mesh) {
-                child.material.emissive.set(0xff0000);
-                child.material.emissiveIntensity = 0.5;
-            }
-        });
+let currentlySelected = null;
+const originalColors = new Map();
+
+export function initSelection(camera, transformControls, groups, renderer) {
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector2();
+  const objects = Object.values(groups);
+  let isDragging = false;
+
+  const onMouseDown = (event) => {
+    if (isDragging) return; // Disable selection during drag
+
+    const rect = renderer.domElement.getBoundingClientRect();
+    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = - ((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+
+    const intersects = raycaster.intersectObjects(objects, true); // Recursive: true to hit meshes in groups
+
+    // Remove previous highlight
+    if (currentlySelected) {
+      restoreOriginalColor(currentlySelected);
+      currentlySelected = null;
     }
-    function unhighlight(group) {
-        group.children.forEach((child) => {
-            if (child instanceof THREE.Mesh) {
-                child.material.emissive.set(0x000000);
-                child.material.emissiveIntensity = 0;
-            }
-        });
+
+    if (intersects.length > 0) {
+      const selectedGroup = intersects[0].object.parent;
+
+      if (selectedGroup && selectedGroup.isGroup) {
+        currentlySelected = selectedGroup;
+        highlightGroup(selectedGroup);
+        transformControls.attach(selectedGroup);
+      }
+    } else {
+      transformControls.detach();
     }
-    function selectLimb(group) {
-        if (selectedLimb) {
-            unhighlight(selectedLimb);
-            transformControls.detach();
-        }
-        selectedLimb = group;
-        highlight(group);
-        transformControls.attach(group);
+  };
+
+  renderer.domElement.addEventListener('mousedown', onMouseDown);
+
+  // Disable selection during gizmo drag
+  transformControls.addEventListener('dragging-changed', (event) => {
+    isDragging = event.value;
+  });
+}
+
+function highlightGroup(group) {
+  group.traverse((child) => {
+    if (child.isMesh && child.material) {
+      if (!originalColors.has(child)) {
+        originalColors.set(child, child.material.color.clone());
+      }
+      child.material.color.set(0xffaaaa); // Brighter red
     }
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-    function onPointerDown(event) {
-        if (transformControls.dragging) return;
-        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
-        raycaster.setFromCamera(mouse, camera);
-        const intersects = raycaster.intersectObjects(selectableGroups, true);
-        if (intersects.length > 0) {
-            let obj = intersects[0].object;
-            while (obj && !selectableGroups.includes(obj)) {
-                obj = obj.parent;
-            }
-            if (obj) {
-                selectLimb(obj);
-            }
-        } else {
-            if (selectedLimb) {
-                unhighlight(selectedLimb);
-                transformControls.detach();
-                selectedLimb = null;
-            }
-        }
+  });
+}
+
+function restoreOriginalColor(group) {
+  group.traverse((child) => {
+    if (child.isMesh && child.material && originalColors.has(child)) {
+      child.material.color.copy(originalColors.get(child));
     }
-    document.addEventListener('pointerdown', onPointerDown);
+  });
 }

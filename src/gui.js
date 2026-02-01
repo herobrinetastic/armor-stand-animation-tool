@@ -9,14 +9,7 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
     leftArmX: 0, leftArmY: 0, leftArmZ: 0,
     rightArmX: 0, rightArmY: 0, rightArmZ: 0,
     leftLegX: 0, leftLegY: 0, leftLegZ: 0,
-    rightLegX: 0, rightLegY: 0, rightLegZ: 0,
-    showArms: true,
-    noBasePlate: false,
-    small: false,
-    invisible: false,
-    customNameVisible: false,
-    noGravity: false,
-    marker: false
+    rightLegX: 0, rightLegY: 0, rightLegZ: 0
   };
 
   function updatePose() {
