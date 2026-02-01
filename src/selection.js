@@ -46,14 +46,6 @@ export function initSelection(camera, transformControls, groups, renderer) {
   transformControls.addEventListener('dragging-changed', (event) => {
     isDragging = event.value;
   });
-
-  // Optional: Also remove highlight when user clicks away from gizmo
-  transformControls.addEventListener('dragging-changed', (event) => {
-    if (!event.value && currentlySelected) {
-      restoreOriginalColor(currentlySelected);
-      currentlySelected = null;
-    }
-  });
 }
 
 function highlightGroup(group) {
