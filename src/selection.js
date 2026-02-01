@@ -62,7 +62,7 @@ function highlightGroup(group) {
       if (!originalColors.has(child)) {
         originalColors.set(child, child.material.color.clone());
       }
-      child.material.color.set(0xff7777); // Brighter red
+      child.material.color.set(0xffaaaa); // Brighter red
     }
   });
 }
