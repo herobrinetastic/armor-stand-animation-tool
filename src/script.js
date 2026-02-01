@@ -51,10 +51,27 @@ createArmorStand(armorStand).then(groups => {
     const sliders = document.querySelectorAll('#pose-window .rotation');
     sliders.forEach(sl => sl.value = 0);
   });
+
+  // Play/pause button listener
+  const playPauseBtn = document.getElementById('play-pause-btn');
+  const playingCheckbox = document.getElementById('playing');
+
+  function updatePlayPauseIcon() {
+    playPauseBtn.textContent = playingCheckbox.checked ? '⏸️' : '▶️';
+  }
+
+  playPauseBtn.addEventListener('click', () => {
+    playingCheckbox.checked = !playingCheckbox.checked;
+    playingCheckbox.dispatchEvent(new Event('change'));
+    updatePlayPauseIcon();
+  });
+
+  playingCheckbox.addEventListener('change', updatePlayPauseIcon);
+  updatePlayPauseIcon(); // Initial state
 });
 
 window.addEventListener('resize', () => {
     renderer.setSize(container.clientWidth, container.clientHeight);
     camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
-});
+}); 
