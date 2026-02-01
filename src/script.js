@@ -19,7 +19,8 @@ camera.updateProjectionMatrix();
 
 const transformControls = initTransformControls(scene, camera, renderer, controls);
 createArmorStand(armorStand).then(groups => {
-  initSelection(camera, transformControls, groups);
+  initSelection(camera, transformControls, groups, renderer); // Passed renderer
+
   const { pose, updatePose, animation, updateTimeline } = initGUI(groups, scene, camera, transformControls, renderer);
 
   animation.currentTime = 0;
