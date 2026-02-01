@@ -129,6 +129,50 @@ body {
     background: #555;
 }
 
+/* Save pose button */
+#save {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    z-index: 20;
+    padding: 8px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    width: 30px;
+    text-align: center;
+    font-size: 16px;
+}
+
+#save:hover {
+    background: #555;
+}
+
+/* Tempo (FPS) control - bottom left, right of save */
+#tempo-label {
+    position: absolute;
+    bottom: 12px;
+    left: 50px;
+    z-index: 20;
+    background: rgba(0,0,0,0.8);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+#tempo-label input[type="range"] {
+    width: 80px;
+    margin: 0 5px;
+}
+
+#tempo-label span {
+    font-size: 12px;
+}
+
 /* Keyframe buttons */
 #add, #insert, #delete {
     position: absolute;
