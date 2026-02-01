@@ -129,22 +129,35 @@ body {
     background: #555;
 }
 
-/* Add keyframe button */
-#add {
+/* Keyframe buttons */
+#add, #insert, #delete {
     position: absolute;
     bottom: 10px;
-    right: 10px;
     z-index: 20;
-    padding: 8px 12px;
+    padding: 8px;
     background: rgba(0,0,0,0.8);
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-family: Arial, sans-serif;
+    width: 30px;
+    text-align: center;
 }
 
-#add:hover {
+#add {
+    right: 10px;
+}
+
+#insert {
+    right: 50px;
+}
+
+#delete {
+    right: 90px;
+}
+
+#add:hover, #insert:hover, #delete:hover {
     background: #555;
 }
 
