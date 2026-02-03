@@ -274,13 +274,20 @@ body {
 }
 
 #pose-window label {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 5px;
     margin: 3px 0;
     font-size: 12px;
 }
 
 #pose-window input[type="range"] {
     width: 150px;
+}
+
+.rotation-value {
+    min-width: 40px;
+    text-align: right;
 }
 
 /* Timeline */
