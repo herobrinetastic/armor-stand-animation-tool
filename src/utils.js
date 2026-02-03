@@ -1,5 +1,6 @@
 // src/utils.js
 import * as THREE from 'three';
+import { unhighlightCurrent, rehighlightCurrent } from './selection.js';
 
 export function createMesh(geometry, material) {
   const mesh = new THREE.Mesh(geometry, material.clone());
@@ -22,6 +23,8 @@ export function createMesh(geometry, material) {
 }
 
 export function captureThumbnail(scene, camera, renderer) {
+  unhighlightCurrent();
+
   const originalWidth = renderer.domElement.width;
   const originalHeight = renderer.domElement.height;
 
@@ -61,6 +64,8 @@ export function captureThumbnail(scene, camera, renderer) {
 
   // Restore original renderer size
   renderer.setSize(originalWidth, originalHeight, false);
+
+  rehighlightCurrent();
 
   return dataUrl;
 }
