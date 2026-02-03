@@ -49,7 +49,10 @@ createArmorStand(armorStand).then(groups => {
     pose.rightLegX = 0; pose.rightLegY = 0; pose.rightLegZ = 0;
     updatePose();
     const sliders = document.querySelectorAll('#pose-window .rotation');
-    sliders.forEach(sl => sl.value = 0);
+    sliders.forEach(sl => {
+      sl.value = 0;
+      sl.nextElementSibling.textContent = '0.0';
+    });
   });
 
   // Play/pause button listener
@@ -57,7 +60,7 @@ createArmorStand(armorStand).then(groups => {
   const playingCheckbox = document.getElementById('playing');
 
   function updatePlayPauseIcon() {
-    playPauseBtn.textContent = playingCheckbox.checked ? '⏸' : '▶';
+    playPauseBtn.textContent = playingCheckbox.checked ? '⏸️' : '▶️';
   }
 
   playPauseBtn.addEventListener('click', () => {
@@ -74,4 +77,4 @@ window.addEventListener('resize', () => {
     renderer.setSize(container.clientWidth, container.clientHeight);
     camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
-});
+}); 

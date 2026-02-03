@@ -22,7 +22,11 @@ export function bindAnimationEvents(animation, pose, applyPose, globalGui) {
     if (animation.keyframes.length) {
       Object.assign(pose, animation.keyframes[animation.kfIndex]);
       applyPose();
-      globalGui.updateDisplay();
+      const sliders = document.querySelectorAll('.rotation');
+      sliders.forEach(sl => {
+        sl.value = pose[`${sl.dataset.part}${sl.dataset.axis.toUpperCase()}`] || 0;
+        sl.nextElementSibling.textContent = parseFloat(sl.value).toFixed(1);
+      });
     }
     kfValue.textContent = animation.kfIndex;
   });

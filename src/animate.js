@@ -40,5 +40,6 @@ function updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta
     const part = sl.dataset.part;
     const axis = sl.dataset.axis.toUpperCase();
     sl.value = pose[`${part}${axis}`] || 0;
+    sl.nextElementSibling.textContent = parseFloat(sl.value).toFixed(1);
   });
 }

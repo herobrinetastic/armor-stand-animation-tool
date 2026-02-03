@@ -32,6 +32,7 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
       const axis = e.target.dataset.axis;
       pose[`${part}${axis.toUpperCase()}`] = parseFloat(e.target.value);
       updatePose();
+      e.target.nextElementSibling.textContent = parseFloat(e.target.value).toFixed(1);
     });
   });
 
@@ -58,9 +59,18 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
         pose[`${part}Z`] = degZ;
         sliders.forEach(sl => {
           if (sl.dataset.part === part) {
-            if (sl.dataset.axis === 'x') sl.value = degX;
-            if (sl.dataset.axis === 'y') sl.value = degY;
-            if (sl.dataset.axis === 'z') sl.value = degZ;
+            if (sl.dataset.axis === 'x') {
+              sl.value = degX;
+              sl.nextElementSibling.textContent = degX.toFixed(1);
+            }
+            if (sl.dataset.axis === 'y') {
+              sl.value = degY;
+              sl.nextElementSibling.textContent = degY.toFixed(1);
+            }
+            if (sl.dataset.axis === 'z') {
+              sl.value = degZ;
+              sl.nextElementSibling.textContent = degZ.toFixed(1);
+            }
           }
         });
       }

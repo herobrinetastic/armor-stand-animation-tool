@@ -95,6 +95,11 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
       if (animation.keyframes.length) {
         Object.assign(pose, animation.keyframes[animation.kfIndex]);
         applyPose();
+        const sliders = document.querySelectorAll('.rotation');
+        sliders.forEach(sl => {
+          sl.value = pose[`${sl.dataset.part}${sl.dataset.axis.toUpperCase()}`] || 0;
+          sl.nextElementSibling.textContent = parseFloat(sl.value).toFixed(1);
+        });
       }
     }
   };
