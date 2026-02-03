@@ -27,6 +27,11 @@ export function bindAnimationEvents(animation, pose, applyPose, globalGui) {
         sl.value = pose[`${sl.dataset.part}${sl.dataset.axis.toUpperCase()}`] || 0;
         sl.nextElementSibling.textContent = parseFloat(sl.value).toFixed(1);
       });
+      // Show keyframe properties
+      const props = document.getElementById('keyframe-properties');
+      props.style.display = 'block';
+      const delayInput = document.getElementById('delay-input');
+      delayInput.value = animation.keyframes[animation.kfIndex].delay;
     }
     kfValue.textContent = animation.kfIndex;
   });

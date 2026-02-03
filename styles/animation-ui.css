@@ -1,3 +1,4 @@
+/* styles/animation-ui.css */
 body {
     background: #111;
     color: white;
@@ -218,6 +219,17 @@ body {
     text-align: center;
 }
 
+#keyframe-properties {
+  position: absolute;
+  top: 100px;
+  right: 20px;
+  background: rgba(0,0,0,0.8);
+  color: white;
+  border: 1px solid #333;
+  padding: 10px;
+  z-index: 10;
+}
+
 #add {
     right: 10px;
 }
@@ -324,4 +336,15 @@ body {
 
 #left-window::-webkit-scrollbar-thumb:hover {
     background: #555; 
+}
+
+#keyframe-properties .close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    right: 5px;
 }

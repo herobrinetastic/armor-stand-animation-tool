@@ -18,14 +18,14 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
   const actions = {
     add() {
       const thumbnail = captureThumbnail(scene, camera, renderer);
-      animation.keyframes.push({ ...pose, thumbnail });
+      animation.keyframes.push({ ...pose, thumbnail, delay: 10 });
       animation.kfIndex = animation.keyframes.length - 1;
       refreshKfSlider();
       updateTimeline();
     },
     insert() {
       const thumbnail = captureThumbnail(scene, camera, renderer);
-      animation.keyframes.splice(animation.kfIndex + 1, 0, { ...pose, thumbnail });
+      animation.keyframes.splice(animation.kfIndex + 1, 0, { ...pose, thumbnail, delay: 10 });
       animation.kfIndex++;
       refreshKfSlider();
       updateTimeline();
@@ -33,7 +33,8 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
     save() {
       if (animation.keyframes.length) {
         const thumbnail = captureThumbnail(scene, camera, renderer);
-        animation.keyframes[animation.kfIndex] = { ...pose, thumbnail };
+        const currentDelay = animation.keyframes[animation.kfIndex].delay ?? 10;
+        animation.keyframes[animation.kfIndex] = { ...pose, thumbnail, delay: currentDelay };
         updateTimeline();
       }
     },
@@ -78,6 +79,7 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
                 applyPose();
                 kf.thumbnail = captureThumbnail(scene, camera, renderer);
               }
+              kf.delay = kf.delay ?? 10;
             });
             animation.kfIndex = 0;
             refreshKfSlider();
@@ -124,6 +126,11 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
         refreshKfSlider();
         actions.loadCurrent();
         updateTimeline();  // Re-render to highlight new active
+        // Show keyframe properties
+        const props = document.getElementById('keyframe-properties');
+        props.style.display = 'block';
+        const delayInput = document.getElementById('delay-input');
+        delayInput.value = animation.keyframes[animation.kfIndex].delay;
       };
       if (i === animation.kfIndex) img.classList.add('active');
       timeline.appendChild(img);
