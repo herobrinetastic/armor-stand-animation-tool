@@ -1,4 +1,3 @@
-/* styles/animation-ui.css */
 body {
     background: #111;
     color: white;
@@ -133,8 +132,8 @@ body {
 /* Save pose button */
 #save {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
+    bottom: 50px;
+    right: 10px;
     z-index: 20;
     padding: 8px;
     background: rgba(0,0,0,0.8);
@@ -157,8 +156,8 @@ body {
 /* Tempo (FPS) control - bottom left, right of save */
 #tempo-label {
     position: absolute;
-    bottom: 12px;
-    left: 50px;
+    bottom: 10px;
+    left: 10px;
     z-index: 20;
     background: rgba(0,0,0,0.8);
     padding: 4px 6px;
@@ -223,9 +222,8 @@ body {
   position: absolute;
   top: 100px;
   right: 20px;
-  background: rgba(0,0,0,0.8);
-  color: white;
-  border: 1px solid #333;
+  background: white;
+  border: 1px solid black;
   padding: 10px;
   z-index: 10;
 }
@@ -336,15 +334,4 @@ body {
 
 #left-window::-webkit-scrollbar-thumb:hover {
     background: #555; 
-}
-
-#keyframe-properties .close {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-    position: absolute;
-    top: 5px;
-    right: 5px;
 }
