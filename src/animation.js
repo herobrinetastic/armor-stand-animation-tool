@@ -18,14 +18,14 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
   const actions = {
     add() {
       const thumbnail = captureThumbnail(scene, camera, renderer);
-      animation.keyframes.push({ ...pose, thumbnail, delay: 10 });
+      animation.keyframes.push({ ...pose, thumbnail });
       animation.kfIndex = animation.keyframes.length - 1;
       refreshKfSlider();
       updateTimeline();
     },
     insert() {
       const thumbnail = captureThumbnail(scene, camera, renderer);
-      animation.keyframes.splice(animation.kfIndex + 1, 0, { ...pose, thumbnail, delay: 10 });
+      animation.keyframes.splice(animation.kfIndex + 1, 0, { ...pose, thumbnail });
       animation.kfIndex++;
       refreshKfSlider();
       updateTimeline();
@@ -33,8 +33,7 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
     save() {
       if (animation.keyframes.length) {
         const thumbnail = captureThumbnail(scene, camera, renderer);
-        const currentDelay = animation.keyframes[animation.kfIndex].delay ?? 10;
-        animation.keyframes[animation.kfIndex] = { ...pose, thumbnail, delay: currentDelay };
+        animation.keyframes[animation.kfIndex] = { ...pose, thumbnail };
         updateTimeline();
       }
     },
@@ -48,7 +47,22 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
       }
     },
     clear() {
-      animation.keyframes = [];
+      // Reset pose to default
+      Object.keys(pose).forEach(key => pose[key] = 0);
+      applyPose();
+
+      // Update sliders to reflect default pose
+      const sliders = document.querySelectorAll('#pose-window .rotation');
+      sliders.forEach(sl => {
+        sl.value = 0;
+        sl.nextElementSibling.textContent = '0.0';
+      });
+
+      // Capture default thumbnail
+      const defaultThumbnail = captureThumbnail(scene, camera, renderer);
+
+      // Reset keyframes to single default
+      animation.keyframes = [{ ...pose, thumbnail: defaultThumbnail }];
       animation.kfIndex = 0;
       refreshKfSlider();
       updateTimeline();
@@ -79,7 +93,6 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
                 applyPose();
                 kf.thumbnail = captureThumbnail(scene, camera, renderer);
               }
-              kf.delay = kf.delay ?? 10;
             });
             animation.kfIndex = 0;
             refreshKfSlider();
@@ -97,11 +110,6 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
       if (animation.keyframes.length) {
         Object.assign(pose, animation.keyframes[animation.kfIndex]);
         applyPose();
-        const sliders = document.querySelectorAll('.rotation');
-        sliders.forEach(sl => {
-          sl.value = pose[`${sl.dataset.part}${sl.dataset.axis.toUpperCase()}`] || 0;
-          sl.nextElementSibling.textContent = parseFloat(sl.value).toFixed(1);
-        });
       }
     }
   };
@@ -126,11 +134,6 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
         refreshKfSlider();
         actions.loadCurrent();
         updateTimeline();  // Re-render to highlight new active
-        // Show keyframe properties
-        const props = document.getElementById('keyframe-properties');
-        props.style.display = 'block';
-        const delayInput = document.getElementById('delay-input');
-        delayInput.value = animation.keyframes[animation.kfIndex].delay;
       };
       if (i === animation.kfIndex) img.classList.add('active');
       timeline.appendChild(img);
