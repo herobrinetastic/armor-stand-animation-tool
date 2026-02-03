@@ -13,12 +13,12 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
   };
 
   function updatePose() {
-    groups.headGroup.rotation.set(THREE.MathUtils.degToRad(pose.headX), THREE.MathUtils.degToRad(pose.headY), THREE.MathUtils.degToRad(pose.headZ));
-    groups.bodyGroup.rotation.set(THREE.MathUtils.degToRad(pose.bodyX), THREE.MathUtils.degToRad(pose.bodyY), THREE.MathUtils.degToRad(pose.bodyZ));
-    groups.leftArmGroup.rotation.set(THREE.MathUtils.degToRad(pose.leftArmX), THREE.MathUtils.degToRad(pose.leftArmY), THREE.MathUtils.degToRad(pose.leftArmZ));
-    groups.rightArmGroup.rotation.set(THREE.MathUtils.degToRad(pose.rightArmX), THREE.MathUtils.degToRad(pose.rightArmY), THREE.MathUtils.degToRad(pose.rightArmZ));
-    groups.leftLegGroup.rotation.set(THREE.MathUtils.degToRad(pose.leftLegX), THREE.MathUtils.degToRad(pose.leftLegY), THREE.MathUtils.degToRad(pose.leftLegZ));
-    groups.rightLegGroup.rotation.set(THREE.MathUtils.degToRad(pose.rightLegX), THREE.MathUtils.degToRad(pose.rightLegY), THREE.MathUtils.degToRad(pose.rightLegZ));
+    groups.headGroup.rotation.set(THREE.MathUtils.degToRad(pose.headX), THREE.MathUtils.degToRad(-pose.headY), THREE.MathUtils.degToRad(-pose.headZ));
+    groups.bodyGroup.rotation.set(THREE.MathUtils.degToRad(pose.bodyX), THREE.MathUtils.degToRad(-pose.bodyY), THREE.MathUtils.degToRad(-pose.bodyZ));
+    groups.leftArmGroup.rotation.set(THREE.MathUtils.degToRad(pose.leftArmX), THREE.MathUtils.degToRad(-pose.leftArmY), THREE.MathUtils.degToRad(-pose.leftArmZ));
+    groups.rightArmGroup.rotation.set(THREE.MathUtils.degToRad(pose.rightArmX), THREE.MathUtils.degToRad(-pose.rightArmY), THREE.MathUtils.degToRad(-pose.rightArmZ));
+    groups.leftLegGroup.rotation.set(THREE.MathUtils.degToRad(pose.leftLegX), THREE.MathUtils.degToRad(-pose.leftLegY), THREE.MathUtils.degToRad(-pose.leftLegZ));
+    groups.rightLegGroup.rotation.set(THREE.MathUtils.degToRad(pose.rightLegX), THREE.MathUtils.degToRad(-pose.rightLegY), THREE.MathUtils.degToRad(-pose.rightLegZ));
   }
 
   const animation = { playing: false, tempo: 1, keyframes: [], kfIndex: 0, currentTime: 0 };
@@ -42,8 +42,8 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
       const group = transformControls.object;
       const rot = group.rotation;
       const degX = THREE.MathUtils.radToDeg(rot.x);
-      const degY = THREE.MathUtils.radToDeg(rot.y);
-      const degZ = THREE.MathUtils.radToDeg(rot.z);
+      const degY = -THREE.MathUtils.radToDeg(rot.y);
+      const degZ = -THREE.MathUtils.radToDeg(rot.z);
       let part;
       switch (group.name) {
         case 'headGroup': part = 'head'; break;
