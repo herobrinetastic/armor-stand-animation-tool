@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { createMesh } from './utils.js';
 
 export async function createArmorStand(armorStand) {
-  const texture = new THREE.TextureLoader().load('textures/armor_stand.png');
+  const texture = new THREE.TextureLoader().load('assets/textures/armor_stand.png');
   texture.magFilter = THREE.NearestFilter;
   texture.minFilter = THREE.NearestFilter;
   const material = new THREE.MeshBasicMaterial({ map: texture });
