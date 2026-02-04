@@ -30,13 +30,30 @@ createArmorStand(armorStand).then(groups => {
   // Add default keyframe after textures and first render
   requestAnimationFrame(() => {
     const defaultThumbnail = captureThumbnail(scene, camera, renderer);
-    animation.keyframes.push({ ...pose, thumbnail: defaultThumbnail, delay: 10 });
+    animation.keyframes.push({ ...pose, thumbnail: defaultThumbnail });
     animation.kfIndex = 0;
     const kfSlider = document.getElementById('kfIndex');
     kfSlider.max = Math.max(0, animation.keyframes.length - 1);
     kfSlider.value = animation.kfIndex;
     document.getElementById('kfIndex-value').textContent = animation.kfIndex;
     updateTimeline();
+  });
+
+  // Update sliders and pose when rotating via gizmo
+  transformControls.addEventListener('objectChange', () => {
+    if (transformControls.object) {
+      const part = transformControls.object.name;
+      const euler = transformControls.object.rotation;
+      pose[`${part}X`] = THREE.MathUtils.radToDeg(euler.x);
+      pose[`${part}Y`] = THREE.MathUtils.radToDeg(euler.y);
+      pose[`${part}Z`] = THREE.MathUtils.radToDeg(euler.z);
+      const sliders = document.querySelectorAll(`#pose-window .rotation[data-part="${part}"]`);
+      sliders.forEach(sl => {
+        const axis = sl.dataset.axis.toUpperCase();
+        sl.value = pose[`${part}${axis}`];
+        sl.nextElementSibling.textContent = parseFloat(sl.value).toFixed(1);
+      });
+    }
   });
 
   // Reset button listener
@@ -71,17 +88,6 @@ createArmorStand(armorStand).then(groups => {
 
   playingCheckbox.addEventListener('change', updatePlayPauseIcon);
   updatePlayPauseIcon(); // Initial state
-
-  // Add listener for delay input and close button
-  const delayInput = document.getElementById('delay-input');
-  delayInput.addEventListener('input', () => {
-    animation.keyframes[animation.kfIndex].delay = parseInt(delayInput.value);
-  });
-
-  const props = document.getElementById('keyframe-properties');
-  document.querySelector('#keyframe-properties .close').addEventListener('click', () => {
-    props.style.display = 'none';
-  });
 });
 
 window.addEventListener('resize', () => {

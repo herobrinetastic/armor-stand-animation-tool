@@ -1,66 +1,122 @@
-// src/model.js
+// src/model.js - exact original four-stick body visual + independent body rotation
 import * as THREE from 'three';
 import { createMesh } from './utils.js';
 
-export async function createArmorStand(armorStand) {
-  const texture = new THREE.TextureLoader().load('assets/textures/armor_stand.png');
-  texture.magFilter = THREE.NearestFilter;
-  texture.minFilter = THREE.NearestFilter;
-  const material = new THREE.MeshBasicMaterial({ map: texture });
+export function createArmorStand(armorStand) {
+  const s = 1 / 16;
+  const hipY = 12 * s;
+  const neckY = 24 * s;
+  const shoulderY = 24 * s;
+  const shoulderX = 6 * s;
 
-  // Head
-  const head = new THREE.Group();
-  head.position.set(0, 1.5, 0);
-  const headMesh = createMesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), material);
-  headMesh.position.set(0, 0.25, 0);
-  head.add(headMesh);
-  head.rotation.order = 'ZYX';
-  armorStand.add(head);
+  const loader = new THREE.TextureLoader();
 
-  // Body
-  const body = new THREE.Group();
-  body.position.set(0, 0.75, 0);
-  const bodyMesh = createMesh(new THREE.BoxGeometry(0.5, 0.75, 0.25), material);
-  bodyMesh.position.set(0, -0.375, 0);
-  body.add(bodyMesh);
-  body.rotation.order = 'ZYX';
-  armorStand.add(body);
+  return new Promise((resolve) => {
+    loader.load('assets/textures/oak_planks.png', (woodTexture) => {
+      woodTexture.magFilter = THREE.NearestFilter;
+      woodTexture.minFilter = THREE.NearestFilter;
 
-  // Left Arm
-  const leftArm = new THREE.Group();
-  leftArm.position.set(0.3125, 1.25, 0);
-  const leftArmMesh = createMesh(new THREE.BoxGeometry(0.25, 0.75, 0.25), material);
-  leftArmMesh.position.set(0.0625, -0.375, 0);
-  leftArm.add(leftArmMesh);
-  leftArm.rotation.order = 'ZYX';
-  armorStand.add(leftArm);
+      loader.load('assets/textures/smooth_stone.png', (stoneTexture) => {
+        stoneTexture.magFilter = THREE.NearestFilter;
+        stoneTexture.minFilter = THREE.NearestFilter;
 
-  // Right Arm
-  const rightArm = new THREE.Group();
-  rightArm.position.set(-0.3125, 1.25, 0);
-  const rightArmMesh = createMesh(new THREE.BoxGeometry(0.25, 0.75, 0.25), material);
-  rightArmMesh.position.set(-0.0625, -0.375, 0);
-  rightArm.add(rightArmMesh);
-  rightArm.rotation.order = 'ZYX';
-  armorStand.add(rightArm);
+        // Baseplate
+        let geometry = new THREE.BoxGeometry(12*s, 1*s, 12*s);
+        let mesh = createMesh(geometry, new THREE.MeshPhongMaterial({ map: stoneTexture, shininess: 10 }));
+        mesh.position.set(0, 0.5*s, 0);
+        armorStand.add(mesh);
 
-  // Left Leg
-  const leftLeg = new THREE.Group();
-  leftLeg.position.set(0.125, 0.75, 0);
-  const leftLegMesh = createMesh(new THREE.BoxGeometry(0.25, 0.75, 0.25), material);
-  leftLegMesh.position.set(0, -0.375, 0);
-  leftLeg.add(leftLegMesh);
-  leftLeg.rotation.order = 'ZYX';
-  armorStand.add(leftLeg);
+        // Body Group - contains the original four meshes (your desired look)
+        const body = new THREE.Group();
+        body.name = 'body';
+        body.position.set(0, neckY, 0);
+        body.rotation.order = 'ZYX';
+        armorStand.add(body);
 
-  // Right Leg
-  const rightLeg = new THREE.Group();
-  rightLeg.position.set(-0.125, 0.75, 0);
-  const rightLegMesh = createMesh(new THREE.BoxGeometry(0.25, 0.75, 0.25), material);
-  rightLegMesh.position.set(0, -0.375, 0);
-  rightLeg.add(rightLegMesh);
-  rightLeg.rotation.order = 'ZYX';
-  armorStand.add(rightLeg);
+        // 1. Wide upper plank
+        geometry = new THREE.BoxGeometry(12*s, 3*s, 3*s);
+        mesh = createMesh(geometry, new THREE.MeshPhongMaterial({ map: woodTexture, shininess: 30 }));
+        mesh.position.set(0, 22.5*s - neckY, 0);
+        body.add(mesh);
 
-  return { head, body, leftArm, rightArm, leftLeg, rightLeg };
+        // 2. Left vertical stick
+        geometry = new THREE.BoxGeometry(2*s, 7*s, 2*s);
+        mesh = createMesh(geometry, new THREE.MeshPhongMaterial({ map: woodTexture, shininess: 30 }));
+        mesh.position.set(-2*s, 17.5*s - neckY, 0);
+        body.add(mesh);
+
+        // 3. Right vertical stick
+        geometry = new THREE.BoxGeometry(2*s, 7*s, 2*s);
+        mesh = createMesh(geometry, new THREE.MeshPhongMaterial({ map: woodTexture, shininess: 30 }));
+        mesh.position.set(2*s, 17.5*s - neckY, 0);
+        body.add(mesh);
+
+        // 4. Lower horizontal plank
+        geometry = new THREE.BoxGeometry(8*s, 2*s, 2*s);
+        mesh = createMesh(geometry, new THREE.MeshPhongMaterial({ map: woodTexture, shininess: 30 }));
+        mesh.position.set(0, 13*s - neckY, 0);
+        body.add(mesh);
+
+        // Head - attached directly to armorStand (independent)
+        const head = new THREE.Group();
+        head.name = 'head';
+        head.position.set(0, neckY, 0);
+        head.rotation.order = 'ZYX';
+        armorStand.add(head);
+
+        geometry = new THREE.BoxGeometry(2*s, 7*s, 2*s);
+        mesh = createMesh(geometry, new THREE.MeshPhongMaterial({ map: woodTexture, shininess: 30 }));
+        mesh.position.set(0, 27.5*s - neckY, 0);
+        head.add(mesh);
+
+        // Arms - attached directly to armorStand (independent)
+        const leftArm = new THREE.Group();
+        leftArm.name = 'leftArm';
+        leftArm.position.set(shoulderX, neckY, 0);
+        leftArm.rotation.order = 'ZYX';
+        armorStand.add(leftArm);
+
+        geometry = new THREE.BoxGeometry(2*s, 12*s, 2*s);
+        mesh = createMesh(geometry, new THREE.MeshPhongMaterial({ map: woodTexture, shininess: 30 }));
+        mesh.position.set(0, 18*s - shoulderY, 0);
+        leftArm.add(mesh);
+
+        const rightArm = new THREE.Group();
+        rightArm.name = 'rightArm';
+        rightArm.position.set(-shoulderX, neckY, 0);
+        rightArm.rotation.order = 'ZYX';
+        armorStand.add(rightArm);
+
+        geometry = new THREE.BoxGeometry(2*s, 12*s, 2*s);
+        mesh = createMesh(geometry, new THREE.MeshPhongMaterial({ map: woodTexture, shininess: 30 }));
+        mesh.position.set(0, 18*s - shoulderY, 0);
+        rightArm.add(mesh);
+
+        // Legs - attached directly to armorStand
+        const leftLeg = new THREE.Group();
+        leftLeg.name = 'leftLeg';
+        leftLeg.position.set(2*s, hipY, 0);
+        leftLeg.rotation.order = 'ZYX';
+        armorStand.add(leftLeg);
+
+        geometry = new THREE.BoxGeometry(2*s, 11*s, 2*s);
+        mesh = createMesh(geometry, new THREE.MeshPhongMaterial({ map: woodTexture, shininess: 30 }));
+        mesh.position.set(0, 6.5*s - hipY, 0);
+        leftLeg.add(mesh);
+
+        const rightLeg = new THREE.Group();
+        rightLeg.name = 'rightLeg';
+        rightLeg.position.set(-2*s, hipY, 0);
+        rightLeg.rotation.order = 'ZYX';
+        armorStand.add(rightLeg);
+
+        geometry = new THREE.BoxGeometry(2*s, 11*s, 2*s);
+        mesh = createMesh(geometry, new THREE.MeshPhongMaterial({ map: woodTexture, shininess: 30 }));
+        mesh.position.set(0, 6.5*s - hipY, 0);
+        rightLeg.add(mesh);
+
+        resolve({ head, body, leftArm, rightArm, leftLeg, rightLeg });
+      });
+    });
+  });
 }
