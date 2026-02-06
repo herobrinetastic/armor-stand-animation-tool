@@ -132,8 +132,8 @@ body {
 /* Save pose button */
 #save {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
+    bottom: 50px;
+    right: 10px;
     z-index: 20;
     padding: 8px;
     background: rgba(0,0,0,0.8);
@@ -157,7 +157,7 @@ body {
 #tempo-label {
     position: absolute;
     bottom: 12px;
-    left: 50px;
+    left: 10px;
     z-index: 20;
     background: rgba(0,0,0,0.8);
     padding: 4px 6px;

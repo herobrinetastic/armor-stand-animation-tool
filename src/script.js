@@ -1,4 +1,3 @@
-filename="src/script.js"
 // src/script.js
 import * as THREE from 'three';
 import { initScene } from './scene-setup.js';
