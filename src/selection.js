@@ -66,3 +66,15 @@ function restoreOriginalColor(group) {
     }
   });
 }
+
+export function unhighlightCurrent() {
+  if (currentlySelected) {
+    restoreOriginalColor(currentlySelected);
+  }
+}
+
+export function rehighlightCurrent() {
+  if (currentlySelected) {
+    highlightGroup(currentlySelected);
+  }
+}

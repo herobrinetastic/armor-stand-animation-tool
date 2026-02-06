@@ -3,9 +3,7 @@ export function bindAnimationEvents(animation, pose, applyPose, globalGui) {
   document.getElementById('playing').checked = animation.playing;
   document.getElementById('playing').addEventListener('change', (e) => { 
     animation.playing = e.target.checked; 
-    if (animation.playing) {
-      animation.currentTime = animation.kfIndex / animation.tempo;
-    }
+    globalGui.updateTimeline();
   });
 
   document.getElementById('tempo').value = animation.tempo;
@@ -19,15 +17,8 @@ export function bindAnimationEvents(animation, pose, applyPose, globalGui) {
   const kfValue = document.getElementById('kfIndex-value');
   kfSlider.addEventListener('input', (e) => {
     animation.kfIndex = parseInt(e.target.value);
-    if (animation.keyframes.length) {
-      Object.assign(pose, animation.keyframes[animation.kfIndex]);
-      applyPose();
-      const sliders = document.querySelectorAll('.rotation');
-      sliders.forEach(sl => {
-        sl.value = pose[`${sl.dataset.part}${sl.dataset.axis.toUpperCase()}`] || 0;
-        sl.nextElementSibling.textContent = parseFloat(sl.value).toFixed(1);
-      });
-    }
     kfValue.textContent = animation.kfIndex;
+    globalGui.actions.loadCurrent();  // Use the actions from addAnimationFolder
+    globalGui.updateTimeline();
   });
 }

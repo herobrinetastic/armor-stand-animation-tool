@@ -12,24 +12,71 @@ export function startAnimation(renderer, scene, camera, controls, animation, pos
   animate(0);
 }
 
+function angleLerp(a, b, t) {
+  let diff = ((b - a + 180) % 360 - 180);
+  return a + diff * t;
+}
+
+function lerpPoses(poseA, poseB, t) {
+  return {
+    headX: angleLerp(poseA.headX, poseB.headX, t),
+    headY: angleLerp(poseA.headY, poseB.headY, t),
+    headZ: angleLerp(poseA.headZ, poseB.headZ, t),
+    bodyX: angleLerp(poseA.bodyX, poseB.bodyX, t),
+    bodyY: angleLerp(poseA.bodyY, poseB.bodyY, t),
+    bodyZ: angleLerp(poseA.bodyZ, poseB.bodyZ, t),
+    leftArmX: angleLerp(poseA.leftArmX, poseB.leftArmX, t),
+    leftArmY: angleLerp(poseA.leftArmY, poseB.leftArmY, t),
+    leftArmZ: angleLerp(poseA.leftArmZ, poseB.leftArmZ, t),
+    rightArmX: angleLerp(poseA.rightArmX, poseB.rightArmX, t),
+    rightArmY: angleLerp(poseA.rightArmY, poseB.rightArmY, t),
+    rightArmZ: angleLerp(poseA.rightArmZ, poseB.rightArmZ, t),
+    leftLegX: angleLerp(poseA.leftLegX, poseB.leftLegX, t),
+    leftLegY: angleLerp(poseA.leftLegY, poseB.leftLegY, t),
+    leftLegZ: angleLerp(poseA.leftLegZ, poseB.leftLegZ, t),
+    rightLegX: angleLerp(poseA.rightLegX, poseB.rightLegX, t),
+    rightLegY: angleLerp(poseA.rightLegY, poseB.rightLegY, t),
+    rightLegZ: angleLerp(poseA.rightLegZ, poseB.rightLegZ, t),
+  };
+}
+
 function updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta) {
   if (!animation.playing || animation.keyframes.length < 2) return;
 
-  animation.currentTime += delta;
+  animation.currentTime += delta * animation.tempo;
 
-  const frameDuration = 1 / animation.tempo;          // seconds per keyframe
-  const totalDuration = animation.keyframes.length * frameDuration;
+  const kfLen = animation.keyframes.length;
+  const durations = animation.keyframes.map((_, i) => (animation.keyframes[(i + 1) % kfLen].delay || 10) / 20); // seconds per segment
+  const totalDuration = durations.reduce((a, b) => a + b, 0);
 
-  const time = animation.currentTime % totalDuration;
-  const frameIndex = Math.floor(time / frameDuration);
+  if (totalDuration === 0) return;
 
-  const poseData = animation.keyframes[frameIndex];
+  animation.currentTime %= totalDuration;
 
-  animation.kfIndex = frameIndex;
-  document.getElementById('kfIndex').value = frameIndex;
-  document.getElementById('kfIndex-value').textContent = frameIndex;
+  let cumulative = 0;
+  let prevIndex = 0;
+  let fraction = 0;
 
-  Object.assign(pose, poseData);
+  for (let i = 0; i < kfLen; i++) {
+    const segDur = durations[i];
+    if (cumulative + segDur > animation.currentTime) {
+      fraction = (animation.currentTime - cumulative) / segDur;
+      prevIndex = i;
+      break;
+    }
+    cumulative += segDur;
+  }
+
+  const nextIndex = (prevIndex + 1) % kfLen;
+  const poseA = animation.keyframes[prevIndex];
+  const poseB = animation.keyframes[nextIndex];
+  const lerpedPose = lerpPoses(poseA, poseB, fraction);
+
+  animation.kfIndex = prevIndex;
+  document.getElementById('kfIndex').value = animation.kfIndex;
+  document.getElementById('kfIndex-value').textContent = animation.kfIndex;
+
+  Object.assign(pose, lerpedPose);
   updatePose();
   if (gui) gui.updateDisplay();
   updateTimeline();

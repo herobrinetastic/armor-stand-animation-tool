@@ -30,7 +30,7 @@ createArmorStand(armorStand).then(groups => {
   // Add default keyframe after textures and first render
   requestAnimationFrame(() => {
     const defaultThumbnail = captureThumbnail(scene, camera, renderer);
-    animation.keyframes.push({ ...pose, thumbnail: defaultThumbnail });
+    animation.keyframes.push({ ...pose, thumbnail: defaultThumbnail, delay: 10 });
     animation.kfIndex = 0;
     const kfSlider = document.getElementById('kfIndex');
     kfSlider.max = Math.max(0, animation.keyframes.length - 1);
@@ -77,4 +77,4 @@ window.addEventListener('resize', () => {
     renderer.setSize(container.clientWidth, container.clientHeight);
     camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
-}); 
+});
