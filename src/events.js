@@ -3,9 +3,7 @@ export function bindAnimationEvents(animation, pose, applyPose, globalGui) {
   document.getElementById('playing').checked = animation.playing;
   document.getElementById('playing').addEventListener('change', (e) => { 
     animation.playing = e.target.checked; 
-    if (animation.playing) {
-      animation.currentTime = animation.kfIndex / animation.tempo;
-    }
+    globalGui.updateTimeline();
   });
 
   document.getElementById('tempo').value = animation.tempo;
@@ -21,15 +19,6 @@ export function bindAnimationEvents(animation, pose, applyPose, globalGui) {
     animation.kfIndex = parseInt(e.target.value);
     kfValue.textContent = animation.kfIndex;
     globalGui.actions.loadCurrent();  // Use the actions from addAnimationFolder
+    globalGui.updateTimeline();
   });
-
-  // Delay input listener
-  const delayInput = document.getElementById('delay-input');
-  if (delayInput) {
-    delayInput.addEventListener('input', (e) => {
-      if (animation.kfIndex >= 0 && animation.kfIndex < animation.keyframes.length) {
-        animation.keyframes[animation.kfIndex].delay = parseInt(e.target.value) || 10;
-      }
-    });
-  }
 }

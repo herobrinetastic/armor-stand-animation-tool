@@ -28,6 +28,8 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
     kfValue.textContent = animation.kfIndex;
   }
 
+  animation.showDelayEditor = false;
+
   const actions = {
     add() {
       const thumbnail = captureThumbnail(scene, camera, renderer);
@@ -138,15 +140,6 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
           sl.value = pose[`${part}${axis}`] || 0;
           sl.nextElementSibling.textContent = parseFloat(sl.value).toFixed(1);
         });
-        // Show keyframe properties
-        const props = document.getElementById('keyframe-properties');
-        if (props) {
-          props.style.display = 'block';
-          const delayInput = document.getElementById('delay-input');
-          if (delayInput) {
-            delayInput.value = animation.keyframes[animation.kfIndex].delay || 10;
-          }
-        }
         // Set currentTime to start of this keyframe
         const durations = animation.keyframes.map(kf => (kf.delay || 10) / 20);
         animation.currentTime = durations.slice(0, animation.kfIndex).reduce((a, b) => a + b, 0);
@@ -167,18 +160,49 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
     const timeline = document.getElementById('timeline');
     timeline.innerHTML = '';
     animation.keyframes.forEach((kf, i) => {
+      const container = document.createElement('div');
+      container.style.position = 'relative';
+      container.style.display = 'inline-block';
+
       const img = document.createElement('img');
       img.src = kf.thumbnail || '';
-      img.onclick = () => {
+      img.onclick = (e) => {
+        e.stopPropagation();
         animation.kfIndex = i;
+        animation.showDelayEditor = true;
         refreshKfSlider();
         actions.loadCurrent();
-        updateTimeline();  // Re-render to highlight new active
+        updateTimeline();  // Re-render to highlight new active and show editor
       };
       if (i === animation.kfIndex) img.classList.add('active');
-      timeline.appendChild(img);
+      container.appendChild(img);
+
+      if (i === animation.kfIndex && !animation.playing && animation.showDelayEditor) {
+        const editor = document.createElement('div');
+        editor.className = 'kf-delay-editor';
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.min = '1';
+        input.value = kf.delay || 10;
+        input.addEventListener('input', (e) => {
+          animation.keyframes[i].delay = parseInt(e.target.value) || 10;
+        });
+        input.addEventListener('click', (e) => e.stopPropagation());
+        editor.appendChild(input);
+        container.appendChild(editor);
+        container.addEventListener('click', (e) => e.stopPropagation());
+      }
+
+      timeline.appendChild(container);
     });
   };
+
+  document.addEventListener('click', () => {
+    if (animation.showDelayEditor) {
+      animation.showDelayEditor = false;
+      updateTimeline();
+    }
+  });
 
   return { kfSlider, refreshKfSlider, actions, updateTimeline };
 }

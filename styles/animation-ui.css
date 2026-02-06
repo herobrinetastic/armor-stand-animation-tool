@@ -51,7 +51,8 @@ body {
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
     border-radius: 8px;
     z-index: 10;
-    overflow: hidden; /* No scroll */
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 #animation-window, #pose-window {
@@ -218,17 +219,6 @@ body {
     text-align: center;
 }
 
-#keyframe-properties {
-  position: absolute;
-  top: 100px;
-  right: 20px;
-  background: rgba(0,0,0,0.8);
-  color: white;
-  border: 1px solid white;
-  padding: 10px;
-  z-index: 10;
-}
-
 #add {
     right: 10px;
 }
@@ -305,7 +295,9 @@ body {
 .timeline {
     display: flex;
     gap: 8px;
-    overflow-x: auto; /* Allow horizontal scroll */
+    flex-wrap: wrap;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .timeline img {
@@ -335,4 +327,34 @@ body {
 
 #left-window::-webkit-scrollbar-thumb:hover {
     background: #555; 
+}
+
+/* Keyframe delay editor */
+.kf-delay-editor {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.8);
+  padding: 2px;
+  border-radius: 4px;
+  z-index: 10;
+  width: 40px;
+  overflow: hidden; /* Remove scroll bars */
+}
+
+.kf-delay-editor input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: white;
+  text-align: center;
+  font-size: 12px;
+  -moz-appearance: textfield; /* Firefox */
+}
+
+.kf-delay-editor input::-webkit-outer-spin-button,
+.kf-delay-editor input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
