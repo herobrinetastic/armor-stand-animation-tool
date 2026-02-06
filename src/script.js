@@ -1,4 +1,5 @@
 // src/script.js
+// src/script.js
 import * as THREE from 'three';
 import { initScene } from './scene-setup.js';
 import { initTransformControls } from './transform-controls.js';
@@ -30,7 +31,7 @@ createArmorStand(armorStand).then(groups => {
   // Add default keyframe after textures and first render
   requestAnimationFrame(() => {
     const defaultThumbnail = captureThumbnail(scene, camera, renderer);
-    animation.keyframes.push({ ...pose, thumbnail: defaultThumbnail });
+    animation.keyframes.push({ ...pose, thumbnail: defaultThumbnail, delay: 10 });
     animation.kfIndex = 0;
     const kfSlider = document.getElementById('kfIndex');
     kfSlider.max = Math.max(0, animation.keyframes.length - 1);
@@ -49,9 +50,10 @@ createArmorStand(armorStand).then(groups => {
     pose.rightLegX = 0; pose.rightLegY = 0; pose.rightLegZ = 0;
     updatePose();
     const sliders = document.querySelectorAll('#pose-window .rotation');
-    sliders.forEach(sl => {
+    const numberInputs = document.querySelectorAll('#pose-window .rotation-value');
+    sliders.forEach((sl, index) => {
       sl.value = 0;
-      sl.nextElementSibling.textContent = '0.0';
+      numberInputs[index].value = 0;
     });
   });
 
@@ -77,4 +79,4 @@ window.addEventListener('resize', () => {
     renderer.setSize(container.clientWidth, container.clientHeight);
     camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
-}); 
+});

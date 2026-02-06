@@ -51,7 +51,8 @@ body {
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
     border-radius: 8px;
     z-index: 10;
-    overflow: hidden; /* No scroll */
+    overflow-y: hidden;
+    overflow-x: auto;
 }
 
 #animation-window, #pose-window {
@@ -132,8 +133,8 @@ body {
 /* Save pose button */
 #save {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
+    bottom: 50px;
+    right: 10px;
     z-index: 20;
     padding: 8px;
     background: rgba(0,0,0,0.8);
@@ -157,7 +158,7 @@ body {
 #tempo-label {
     position: absolute;
     bottom: 12px;
-    left: 50px;
+    left: 10px;
     z-index: 20;
     background: rgba(0,0,0,0.8);
     padding: 4px 6px;
@@ -288,13 +289,26 @@ body {
 .rotation-value {
     min-width: 40px;
     text-align: right;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 12px;
+    -moz-appearance: textfield; /* Hide spin buttons */
+}
+
+.rotation-value::-webkit-outer-spin-button,
+.rotation-value::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 /* Timeline */
 .timeline {
     display: flex;
     gap: 8px;
-    overflow: hidden; /* No scroll */
+    flex-wrap: nowrap;
+    overflow-y: hidden;
+    overflow-x: auto;
 }
 
 .timeline img {
@@ -324,4 +338,34 @@ body {
 
 #left-window::-webkit-scrollbar-thumb:hover {
     background: #555; 
+}
+
+/* Keyframe delay editor */
+.kf-delay-editor {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.8);
+  padding: 2px;
+  border-radius: 4px;
+  z-index: 10;
+  width: 40px;
+  overflow: hidden; /* Remove scroll bars */
+}
+
+.kf-delay-editor input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: white;
+  text-align: center;
+  font-size: 12px;
+  -moz-appearance: textfield; /* Firefox */
+}
+
+.kf-delay-editor input::-webkit-outer-spin-button,
+.kf-delay-editor input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
