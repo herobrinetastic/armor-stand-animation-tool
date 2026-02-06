@@ -61,12 +61,12 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
       const degZ = -THREE.MathUtils.radToDeg(rot.z);
       let part;
       switch (group.name) {
-        case 'head': part = 'head'; break;
-        case 'body': part = 'body'; break;
-        case 'leftArm': part = 'leftArm'; break;
-        case 'rightArm': part = 'rightArm'; break;
-        case 'leftLeg': part = 'leftLeg'; break;
-        case 'rightLeg': part = 'rightLeg'; break;
+        case 'headGroup': part = 'head'; break;
+        case 'bodyGroup': part = 'body'; break;
+        case 'leftArmGroup': part = 'leftArm'; break;
+        case 'rightArmGroup': part = 'rightArm'; break;
+        case 'leftLegGroup': part = 'leftLeg'; break;
+        case 'rightLegGroup': part = 'rightLeg'; break;
       }
       if (part) {
         const x = Math.round(degX);
