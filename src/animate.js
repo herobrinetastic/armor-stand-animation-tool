@@ -1,13 +1,12 @@
 // src/animate.js
 export function startAnimation(renderer, scene, camera, controls, animation, pose, updatePose, gui, updateTimeline) {
   let lastTime = 0;
-  let lastKfIndex = -1;
   function animate(time) {
     requestAnimationFrame(animate);
     const delta = (time - lastTime) / 1000;
     lastTime = time;
     controls.update();
-    updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta, lastKfIndex);
+    updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta);
     renderer.render(scene, camera);
   }
   animate(0);
@@ -41,24 +40,13 @@ function lerpPoses(poseA, poseB, t) {
   };
 }
 
-function normalizePose(pose) {
-  const normalized = { ...pose };
-  for (let key in normalized) {
-    let deg = normalized[key];
-    deg = ((deg % 360) + 360) % 360;
-    if (deg > 180) deg -= 360;
-    normalized[key] = deg;
-  }
-  return normalized;
-}
-
-function updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta, lastKfIndex) {
+function updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta) {
   if (!animation.playing || animation.keyframes.length < 2) return;
 
   animation.currentTime += delta * animation.tempo;
 
   const kfLen = animation.keyframes.length;
-  const durations = animation.keyframes.map(kf => (kf.delay || 10) / 20); // seconds per segment
+  const durations = animation.keyframes.map((_, i) => (animation.keyframes[(i + 1) % kfLen].delay || 10) / 20); // seconds per segment
   const totalDuration = durations.reduce((a, b) => a + b, 0);
 
   if (totalDuration === 0) return;
@@ -84,17 +72,14 @@ function updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta
   const poseB = animation.keyframes[nextIndex];
   const lerpedPose = lerpPoses(poseA, poseB, fraction);
 
-  Object.assign(pose, normalizePose(lerpedPose));
+  animation.kfIndex = prevIndex;
+  document.getElementById('kfIndex').value = animation.kfIndex;
+  document.getElementById('kfIndex-value').textContent = animation.kfIndex;
+
+  Object.assign(pose, lerpedPose);
   updatePose();
   if (gui) gui.updateDisplay();
-
-  animation.kfIndex = prevIndex;
-  if (animation.kfIndex !== lastKfIndex) {
-    lastKfIndex = animation.kfIndex;
-    updateTimeline();
-    document.getElementById('kfIndex').value = animation.kfIndex;
-    document.getElementById('kfIndex-value').textContent = animation.kfIndex;
-  }
+  updateTimeline();
 
   // Update sliders during animation
   const sliders = document.querySelectorAll('#pose-window .rotation');

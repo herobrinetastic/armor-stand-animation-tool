@@ -51,8 +51,8 @@ body {
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
     border-radius: 8px;
     z-index: 10;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow-y: hidden;
+    overflow-x: auto;
 }
 
 #animation-window, #pose-window {
@@ -295,9 +295,9 @@ body {
 .timeline {
     display: flex;
     gap: 8px;
-    flex-wrap: wrap;
-    overflow-y: auto;
-    overflow-x: hidden;
+    flex-wrap: nowrap;
+    overflow-y: hidden;
+    overflow-x: auto;
 }
 
 .timeline img {
