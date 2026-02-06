@@ -305,7 +305,7 @@ body {
 .timeline {
     display: flex;
     gap: 8px;
-    overflow: hidden; /* No scroll */
+    overflow-x: auto; /* Allow horizontal scroll */
 }
 
 .timeline img {

@@ -1,12 +1,13 @@
 // src/animate.js
 export function startAnimation(renderer, scene, camera, controls, animation, pose, updatePose, gui, updateTimeline) {
   let lastTime = 0;
+  let lastKfIndex = -1;
   function animate(time) {
     requestAnimationFrame(animate);
     const delta = (time - lastTime) / 1000;
     lastTime = time;
     controls.update();
-    updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta);
+    updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta, lastKfIndex);
     renderer.render(scene, camera);
   }
   animate(0);
@@ -51,7 +52,7 @@ function normalizePose(pose) {
   return normalized;
 }
 
-function updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta) {
+function updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta, lastKfIndex) {
   if (!animation.playing || animation.keyframes.length < 2) return;
 
   animation.currentTime += delta * animation.tempo;
@@ -86,11 +87,14 @@ function updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta
   Object.assign(pose, normalizePose(lerpedPose));
   updatePose();
   if (gui) gui.updateDisplay();
-  updateTimeline();
 
   animation.kfIndex = prevIndex;
-  document.getElementById('kfIndex').value = animation.kfIndex;
-  document.getElementById('kfIndex-value').textContent = animation.kfIndex;
+  if (animation.kfIndex !== lastKfIndex) {
+    lastKfIndex = animation.kfIndex;
+    updateTimeline();
+    document.getElementById('kfIndex').value = animation.kfIndex;
+    document.getElementById('kfIndex-value').textContent = animation.kfIndex;
+  }
 
   // Update sliders during animation
   const sliders = document.querySelectorAll('#pose-window .rotation');

@@ -77,6 +77,7 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
       // Reset keyframes to single default
       animation.keyframes = [{ ...normalizePose(pose), thumbnail: defaultThumbnail, delay: 10 }];
       animation.kfIndex = 0;
+      animation.currentTime = 0;
       refreshKfSlider();
       updateTimeline();
     },
@@ -99,6 +100,8 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
           try {
             const d = JSON.parse(ev.target.result);
             animation.tempo = d.tempo ?? 1;
+            document.getElementById('tempo').value = animation.tempo;
+            document.getElementById('tempo-value').textContent = animation.tempo.toFixed(1);
             animation.keyframes = (d.keyframes ?? []).map(kf => {
               let normKf = normalizePose(kf);
               if (!kf.thumbnail) {
@@ -112,6 +115,7 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
               return normKf;
             });
             animation.kfIndex = 0;
+            animation.currentTime = 0;
             refreshKfSlider();
             actions.loadCurrent();
             updateTimeline();
@@ -143,6 +147,9 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
             delayInput.value = animation.keyframes[animation.kfIndex].delay || 10;
           }
         }
+        // Set currentTime to start of this keyframe
+        const durations = animation.keyframes.map(kf => (kf.delay || 10) / 20);
+        animation.currentTime = durations.slice(0, animation.kfIndex).reduce((a, b) => a + b, 0);
       }
     }
   };
