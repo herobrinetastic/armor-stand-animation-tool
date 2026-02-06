@@ -2,6 +2,19 @@
 import { bindAnimationEvents } from './events.js';
 import { captureThumbnail } from './utils.js';
 
+function normalizePose(pose) {
+  const normalized = { ...pose };
+  for (let key in normalized) {
+    if (key !== 'thumbnail' && key !== 'delay') {
+      let deg = normalized[key];
+      deg = ((deg % 360) + 360) % 360;
+      if (deg > 180) deg -= 360;
+      normalized[key] = deg;
+    }
+  }
+  return normalized;
+}
+
 export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, scene, camera, renderer) {
   // Bind events
   bindAnimationEvents(animation, pose, applyPose, globalGui);
@@ -18,14 +31,14 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
   const actions = {
     add() {
       const thumbnail = captureThumbnail(scene, camera, renderer);
-      animation.keyframes.push({ ...pose, thumbnail });
+      animation.keyframes.push({ ...normalizePose(pose), thumbnail, delay: 10 });
       animation.kfIndex = animation.keyframes.length - 1;
       refreshKfSlider();
       updateTimeline();
     },
     insert() {
       const thumbnail = captureThumbnail(scene, camera, renderer);
-      animation.keyframes.splice(animation.kfIndex + 1, 0, { ...pose, thumbnail });
+      animation.keyframes.splice(animation.kfIndex + 1, 0, { ...normalizePose(pose), thumbnail, delay: 10 });
       animation.kfIndex++;
       refreshKfSlider();
       updateTimeline();
@@ -33,7 +46,7 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
     save() {
       if (animation.keyframes.length) {
         const thumbnail = captureThumbnail(scene, camera, renderer);
-        animation.keyframes[animation.kfIndex] = { ...pose, thumbnail };
+        animation.keyframes[animation.kfIndex] = { ...animation.keyframes[animation.kfIndex], ...normalizePose(pose), thumbnail };
         updateTimeline();
       }
     },
@@ -62,7 +75,7 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
       const defaultThumbnail = captureThumbnail(scene, camera, renderer);
 
       // Reset keyframes to single default
-      animation.keyframes = [{ ...pose, thumbnail: defaultThumbnail }];
+      animation.keyframes = [{ ...normalizePose(pose), thumbnail: defaultThumbnail, delay: 10 }];
       animation.kfIndex = 0;
       refreshKfSlider();
       updateTimeline();
@@ -86,13 +99,17 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
           try {
             const d = JSON.parse(ev.target.result);
             animation.tempo = d.tempo ?? 1;
-            animation.keyframes = d.keyframes ?? [];
-            animation.keyframes.forEach(kf => {
+            animation.keyframes = (d.keyframes ?? []).map(kf => {
+              let normKf = normalizePose(kf);
               if (!kf.thumbnail) {
-                Object.assign(pose, kf);
+                Object.assign(pose, normKf);
                 applyPose();
-                kf.thumbnail = captureThumbnail(scene, camera, renderer);
+                normKf.thumbnail = captureThumbnail(scene, camera, renderer);
+              } else {
+                normKf.thumbnail = kf.thumbnail;
               }
+              normKf.delay = kf.delay || 10;
+              return normKf;
             });
             animation.kfIndex = 0;
             refreshKfSlider();
@@ -110,6 +127,22 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
       if (animation.keyframes.length) {
         Object.assign(pose, animation.keyframes[animation.kfIndex]);
         applyPose();
+        const sliders = document.querySelectorAll('.rotation');
+        sliders.forEach(sl => {
+          const part = sl.dataset.part;
+          const axis = sl.dataset.axis.toUpperCase();
+          sl.value = pose[`${part}${axis}`] || 0;
+          sl.nextElementSibling.textContent = parseFloat(sl.value).toFixed(1);
+        });
+        // Show keyframe properties
+        const props = document.getElementById('keyframe-properties');
+        if (props) {
+          props.style.display = 'block';
+          const delayInput = document.getElementById('delay-input');
+          if (delayInput) {
+            delayInput.value = animation.keyframes[animation.kfIndex].delay || 10;
+          }
+        }
       }
     }
   };

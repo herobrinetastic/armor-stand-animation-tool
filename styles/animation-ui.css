@@ -132,8 +132,8 @@ body {
 /* Save pose button */
 #save {
     position: absolute;
-    bottom: 50px;
-    right: 10px;
+    bottom: 10px;
+    left: 10px;
     z-index: 20;
     padding: 8px;
     background: rgba(0,0,0,0.8);
@@ -156,8 +156,8 @@ body {
 /* Tempo (FPS) control - bottom left, right of save */
 #tempo-label {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
+    bottom: 12px;
+    left: 50px;
     z-index: 20;
     background: rgba(0,0,0,0.8);
     padding: 4px 6px;
@@ -222,8 +222,9 @@ body {
   position: absolute;
   top: 100px;
   right: 20px;
-  background: white;
-  border: 1px solid black;
+  background: rgba(0,0,0,0.8);
+  color: white;
+  border: 1px solid white;
   padding: 10px;
   z-index: 10;
 }

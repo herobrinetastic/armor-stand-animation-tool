@@ -40,6 +40,17 @@ function lerpPoses(poseA, poseB, t) {
   };
 }
 
+function normalizePose(pose) {
+  const normalized = { ...pose };
+  for (let key in normalized) {
+    let deg = normalized[key];
+    deg = ((deg % 360) + 360) % 360;
+    if (deg > 180) deg -= 360;
+    normalized[key] = deg;
+  }
+  return normalized;
+}
+
 function updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta) {
   if (!animation.playing || animation.keyframes.length < 2) return;
 
@@ -72,14 +83,14 @@ function updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta
   const poseB = animation.keyframes[nextIndex];
   const lerpedPose = lerpPoses(poseA, poseB, fraction);
 
-  animation.kfIndex = prevIndex;
-  document.getElementById('kfIndex').value = animation.kfIndex;
-  document.getElementById('kfIndex-value').textContent = animation.kfIndex;
-
-  Object.assign(pose, lerpedPose);
+  Object.assign(pose, normalizePose(lerpedPose));
   updatePose();
   if (gui) gui.updateDisplay();
   updateTimeline();
+
+  animation.kfIndex = prevIndex;
+  document.getElementById('kfIndex').value = animation.kfIndex;
+  document.getElementById('kfIndex-value').textContent = animation.kfIndex;
 
   // Update sliders during animation
   const sliders = document.querySelectorAll('#pose-window .rotation');

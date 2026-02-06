@@ -19,20 +19,17 @@ export function bindAnimationEvents(animation, pose, applyPose, globalGui) {
   const kfValue = document.getElementById('kfIndex-value');
   kfSlider.addEventListener('input', (e) => {
     animation.kfIndex = parseInt(e.target.value);
-    if (animation.keyframes.length) {
-      Object.assign(pose, animation.keyframes[animation.kfIndex]);
-      applyPose();
-      const sliders = document.querySelectorAll('.rotation');
-      sliders.forEach(sl => {
-        sl.value = pose[`${sl.dataset.part}${sl.dataset.axis.toUpperCase()}`] || 0;
-        sl.nextElementSibling.textContent = parseFloat(sl.value).toFixed(1);
-      });
-      // Show keyframe properties
-      const props = document.getElementById('keyframe-properties');
-      props.style.display = 'block';
-      const delayInput = document.getElementById('delay-input');
-      delayInput.value = animation.keyframes[animation.kfIndex].delay;
-    }
     kfValue.textContent = animation.kfIndex;
+    globalGui.actions.loadCurrent();  // Use the actions from addAnimationFolder
   });
+
+  // Delay input listener
+  const delayInput = document.getElementById('delay-input');
+  if (delayInput) {
+    delayInput.addEventListener('input', (e) => {
+      if (animation.kfIndex >= 0 && animation.kfIndex < animation.keyframes.length) {
+        animation.keyframes[animation.kfIndex].delay = parseInt(e.target.value) || 10;
+      }
+    });
+  }
 }

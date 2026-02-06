@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,6 +59,9 @@
             <button id="add">+</button>
             <button id="play-pause-btn">▶️</button>
             <div id="model-container"></div> <!-- Model canvas appended here -->
+            <div id="keyframe-properties" style="display: none;">
+                <label>Delay (ticks): <input id="delay-input" type="number" min="1" value="10"></label>
+            </div>
         </div>
         <div id="right-window">
             <div id="animation-window">
@@ -77,12 +79,6 @@
         <div id="bottom-window">
             <div id="timeline" class="timeline"></div>
         </div>
-    </div>
-
-    <div id="keyframe-properties" style="display: none;">
-        <button class="close">×</button>
-        <h3>Keyframe Properties</h3>
-        <label>Delay (ticks): <input id="delay-input" type="number" min="1" step="1" value="10"></label>
     </div>
 
     <script type="importmap">
