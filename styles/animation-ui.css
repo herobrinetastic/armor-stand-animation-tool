@@ -289,6 +289,17 @@ body {
 .rotation-value {
     min-width: 40px;
     text-align: right;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 12px;
+    -moz-appearance: textfield; /* Hide spin buttons */
+}
+
+.rotation-value::-webkit-outer-spin-button,
+.rotation-value::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 /* Timeline */

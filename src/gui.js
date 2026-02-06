@@ -13,26 +13,41 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
   };
 
   function updatePose() {
-    groups.head.rotation.set(THREE.MathUtils.degToRad(pose.headX), THREE.MathUtils.degToRad(-pose.headY), THREE.MathUtils.degToRad(-pose.headZ));
-    groups.body.rotation.set(THREE.MathUtils.degToRad(pose.bodyX), THREE.MathUtils.degToRad(-pose.bodyY), THREE.MathUtils.degToRad(-pose.bodyZ));
-    groups.leftArm.rotation.set(THREE.MathUtils.degToRad(pose.leftArmX), THREE.MathUtils.degToRad(-pose.leftArmY), THREE.MathUtils.degToRad(-pose.leftArmZ));
-    groups.rightArm.rotation.set(THREE.MathUtils.degToRad(pose.rightArmX), THREE.MathUtils.degToRad(-pose.rightArmY), THREE.MathUtils.degToRad(-pose.rightArmZ));
-    groups.leftLeg.rotation.set(THREE.MathUtils.degToRad(pose.leftLegX), THREE.MathUtils.degToRad(-pose.leftLegY), THREE.MathUtils.degToRad(-pose.leftLegZ));
-    groups.rightLeg.rotation.set(THREE.MathUtils.degToRad(pose.rightLegX), THREE.MathUtils.degToRad(-pose.rightLegY), THREE.MathUtils.degToRad(-pose.rightLegZ));
+    groups.headGroup.rotation.set(THREE.MathUtils.degToRad(pose.headX), THREE.MathUtils.degToRad(-pose.headY), THREE.MathUtils.degToRad(-pose.headZ));
+    groups.bodyGroup.rotation.set(THREE.MathUtils.degToRad(pose.bodyX), THREE.MathUtils.degToRad(-pose.bodyY), THREE.MathUtils.degToRad(-pose.bodyZ));
+    groups.leftArmGroup.rotation.set(THREE.MathUtils.degToRad(pose.leftArmX), THREE.MathUtils.degToRad(-pose.leftArmY), THREE.MathUtils.degToRad(-pose.leftArmZ));
+    groups.rightArmGroup.rotation.set(THREE.MathUtils.degToRad(pose.rightArmX), THREE.MathUtils.degToRad(-pose.rightArmY), THREE.MathUtils.degToRad(-pose.rightArmZ));
+    groups.leftLegGroup.rotation.set(THREE.MathUtils.degToRad(pose.leftLegX), THREE.MathUtils.degToRad(-pose.leftLegY), THREE.MathUtils.degToRad(-pose.leftLegZ));
+    groups.rightLegGroup.rotation.set(THREE.MathUtils.degToRad(pose.rightLegX), THREE.MathUtils.degToRad(-pose.rightLegY), THREE.MathUtils.degToRad(-pose.rightLegZ));
   }
 
-  const animation = { playing: false, tempo: 1, keyframes: [], kfIndex: 0, currentTime: 0 };
-  const animFolder = addAnimationFolder(null, animation, pose, updatePose, scene, camera, renderer); // Removed gui dependency
+  const animation = { playing: false, tempo: 1, keyframes: [], kfIndex: 0, currentTime: 0, showDelayEditor: false };
+  const animFolder = addAnimationFolder(animation, pose, updatePose, scene, camera, renderer);
 
   // Bind custom sliders
   const sliders = document.querySelectorAll('#pose-window .rotation');
-  sliders.forEach(slider => {
+  const numberInputs = document.querySelectorAll('#pose-window .rotation-value');
+  sliders.forEach((slider, index) => {
     slider.addEventListener('input', (e) => {
       const part = e.target.dataset.part;
-      const axis = e.target.dataset.axis;
-      pose[`${part}${axis.toUpperCase()}`] = parseFloat(e.target.value);
+      const axis = e.target.dataset.axis.toUpperCase();
+      const val = parseInt(e.target.value, 10);
+      pose[`${part}${axis}`] = val;
       updatePose();
-      e.target.nextElementSibling.textContent = parseFloat(e.target.value).toFixed(1);
+      numberInputs[index].value = val;
+    });
+  });
+
+  numberInputs.forEach((input, index) => {
+    input.addEventListener('change', (e) => {
+      const part = sliders[index].dataset.part;
+      const axis = sliders[index].dataset.axis.toUpperCase();
+      let val = parseInt(e.target.value, 10);
+      val = isNaN(val) ? 0 : Math.max(-180, Math.min(180, val));
+      pose[`${part}${axis}`] = val;
+      updatePose();
+      sliders[index].value = val;
+      e.target.value = val;
     });
   });
 
@@ -54,22 +69,25 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
         case 'rightLeg': part = 'rightLeg'; break;
       }
       if (part) {
-        pose[`${part}X`] = degX;
-        pose[`${part}Y`] = degY;
-        pose[`${part}Z`] = degZ;
-        sliders.forEach(sl => {
+        const x = Math.round(degX);
+        const y = Math.round(degY);
+        const z = Math.round(degZ);
+        pose[`${part}X`] = x;
+        pose[`${part}Y`] = y;
+        pose[`${part}Z`] = z;
+        sliders.forEach((sl, idx) => {
           if (sl.dataset.part === part) {
             if (sl.dataset.axis === 'x') {
-              sl.value = degX;
-              sl.nextElementSibling.textContent = degX.toFixed(1);
+              sl.value = x;
+              numberInputs[idx].value = x;
             }
             if (sl.dataset.axis === 'y') {
-              sl.value = degY;
-              sl.nextElementSibling.textContent = degY.toFixed(1);
+              sl.value = y;
+              numberInputs[idx].value = y;
             }
             if (sl.dataset.axis === 'z') {
-              sl.value = degZ;
-              sl.nextElementSibling.textContent = degZ.toFixed(1);
+              sl.value = z;
+              numberInputs[idx].value = z;
             }
           }
         });

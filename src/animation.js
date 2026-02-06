@@ -15,7 +15,7 @@ function normalizePose(pose) {
   return normalized;
 }
 
-export function addAnimationFolder(gui, animation, pose, applyPose, scene, camera, renderer) {
+export function addAnimationFolder(animation, pose, applyPose, scene, camera, renderer) {
   const kfSlider = document.getElementById('kfIndex');
   const kfValue = document.getElementById('kfIndex-value');
 
@@ -61,11 +61,12 @@ export function addAnimationFolder(gui, animation, pose, applyPose, scene, camer
       Object.keys(pose).forEach(key => pose[key] = 0);
       applyPose();
 
-      // Update sliders to reflect default pose
+      // Update sliders and number inputs to reflect default pose
       const sliders = document.querySelectorAll('#pose-window .rotation');
-      sliders.forEach(sl => {
+      const numberInputs = document.querySelectorAll('#pose-window .rotation-value');
+      sliders.forEach((sl, index) => {
         sl.value = 0;
-        sl.nextElementSibling.textContent = '0.0';
+        numberInputs[index].value = 0;
       });
 
       // Capture default thumbnail
@@ -129,11 +130,13 @@ export function addAnimationFolder(gui, animation, pose, applyPose, scene, camer
         Object.assign(pose, animation.keyframes[animation.kfIndex]);
         applyPose();
         const sliders = document.querySelectorAll('.rotation');
-        sliders.forEach(sl => {
+        const numberInputs = document.querySelectorAll('.rotation-value');
+        sliders.forEach((sl, idx) => {
           const part = sl.dataset.part;
           const axis = sl.dataset.axis.toUpperCase();
-          sl.value = pose[`${part}${axis}`] || 0;
-          sl.nextElementSibling.textContent = parseFloat(sl.value).toFixed(1);
+          const val = pose[`${part}${axis}`] || 0;
+          sl.value = val;
+          numberInputs[idx].value = Math.round(val);
         });
         // Set currentTime to start of this keyframe
         const durations = animation.keyframes.map(kf => (kf.delay || 10) / 20);
