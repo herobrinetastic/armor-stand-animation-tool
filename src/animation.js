@@ -15,10 +15,7 @@ function normalizePose(pose) {
   return normalized;
 }
 
-export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, scene, camera, renderer) {
-  // Bind events
-  bindAnimationEvents(animation, pose, applyPose, globalGui);
-
+export function addAnimationFolder(gui, animation, pose, applyPose, scene, camera, renderer) {
   const kfSlider = document.getElementById('kfIndex');
   const kfValue = document.getElementById('kfIndex-value');
 
@@ -27,8 +24,6 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
     kfSlider.value = animation.kfIndex;
     kfValue.textContent = animation.kfIndex;
   }
-
-  animation.showDelayEditor = false;
 
   const actions = {
     add() {
@@ -203,6 +198,8 @@ export function addAnimationFolder(gui, animation, pose, applyPose, globalGui, s
       updateTimeline();
     }
   });
+
+  bindAnimationEvents(animation, pose, applyPose, {actions, updateTimeline});
 
   return { kfSlider, refreshKfSlider, actions, updateTimeline };
 }

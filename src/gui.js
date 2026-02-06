@@ -22,7 +22,7 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
   }
 
   const animation = { playing: false, tempo: 1, keyframes: [], kfIndex: 0, currentTime: 0 };
-  const animFolder = addAnimationFolder(null, animation, pose, updatePose, null, scene, camera, renderer); // Removed gui dependency
+  const animFolder = addAnimationFolder(null, animation, pose, updatePose, scene, camera, renderer); // Removed gui dependency
 
   // Bind custom sliders
   const sliders = document.querySelectorAll('#pose-window .rotation');
