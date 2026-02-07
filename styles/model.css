@@ -1,0 +1,184 @@
+/* model.css */
+
+body {
+    background: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+    overflow: hidden; /* Fix unwanted scroll bars */
+}
+
+#ui-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: 1fr 100px; /* Bottom fixed height */
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden; /* Fix unwanted scroll bars */
+}
+
+#center-window {
+    grid-area: 1 / 2 / 2 / 3;
+    position: relative;
+    padding: 10px;
+    overflow: hidden; /* No scroll */
+    pointer-events: auto; /* Fix orbit camera mouse events */
+}
+
+#model-container {
+    height: 100%;
+    width: 100%;
+    pointer-events: auto; /* Fix orbit camera mouse events */
+}
+
+/* Reset button */
+#reset-pose-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 20;
+    padding: 8px 12px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+}
+
+#reset-pose-btn:hover {
+    background: #555;
+}
+
+/* Save pose button */
+#save {
+    position: absolute;
+    bottom: 50px;
+    right: 10px;
+    z-index: 20;
+    padding: 8px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+#save:hover {
+    background: #555;
+}
+
+/* Tempo (FPS) control - bottom left, right of save */
+#tempo-label {
+    position: absolute;
+    bottom: 12px;
+    left: 10px;
+    z-index: 20;
+    background: rgba(0,0,0,0.8);
+    padding: 4px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+#tempo-label input[type="range"] {
+    width: 60px;
+    margin: 0 5px;
+    -webkit-appearance: none;
+    height: 5px;
+    background: #222;
+    border-radius: 5px;
+}
+
+#tempo-label input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    background: #555;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#tempo-label input[type="range"]::-moz-range-track {
+    height: 5px;
+    background: #222;
+    border-radius: 5px;
+}
+
+#tempo-label input[type="range"]::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    background: #555;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#tempo-label span {
+    font-size: 12px;
+}
+
+/* Keyframe buttons */
+#add, #insert, #delete {
+    position: absolute;
+    bottom: 10px;
+    z-index: 20;
+    padding: 8px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    width: 30px;
+    text-align: center;
+}
+
+#add {
+    right: 10px;
+}
+
+#insert {
+    right: 50px;
+}
+
+#delete {
+    right: 90px;
+}
+
+#add:hover, #insert:hover, #delete:hover {
+    background: #555;
+}
+
+/* Play/pause button */
+#play-pause-btn {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+#play-pause-btn:hover {
+    background: #555;
+}
+
+#play-pause-btn img {
+  width: 28px;
+  height: 28px;
+}

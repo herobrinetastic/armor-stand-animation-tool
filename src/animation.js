@@ -16,28 +16,18 @@ function normalizePose(pose) {
 }
 
 export function addAnimationFolder(animation, pose, applyPose, scene, camera, renderer) {
-  const kfSlider = document.getElementById('kfIndex');
-  const kfValue = document.getElementById('kfIndex-value');
-
-  function refreshKfSlider() {
-    kfSlider.max = Math.max(0, animation.keyframes.length - 1);
-    kfSlider.value = animation.kfIndex;
-    kfValue.textContent = animation.kfIndex;
-  }
 
   const actions = {
     add() {
       const thumbnail = captureThumbnail(scene, camera, renderer);
       animation.keyframes.push({ ...normalizePose(pose), thumbnail, delay: 10 });
       animation.kfIndex = animation.keyframes.length - 1;
-      refreshKfSlider();
       updateTimeline();
     },
     insert() {
       const thumbnail = captureThumbnail(scene, camera, renderer);
       animation.keyframes.splice(animation.kfIndex + 1, 0, { ...normalizePose(pose), thumbnail, delay: 10 });
       animation.kfIndex++;
-      refreshKfSlider();
       updateTimeline();
     },
     save() {
@@ -51,33 +41,9 @@ export function addAnimationFolder(animation, pose, applyPose, scene, camera, re
       if (animation.keyframes.length > 1) {
         animation.keyframes.splice(animation.kfIndex, 1);
         animation.kfIndex = Math.min(animation.kfIndex, animation.keyframes.length - 1);
-        refreshKfSlider();
         actions.loadCurrent();
         updateTimeline();
       }
-    },
-    clear() {
-      // Reset pose to default
-      Object.keys(pose).forEach(key => pose[key] = 0);
-      applyPose();
-
-      // Update sliders and number inputs to reflect default pose
-      const sliders = document.querySelectorAll('#pose-window .rotation');
-      const numberInputs = document.querySelectorAll('#pose-window .rotation-value');
-      sliders.forEach((sl, index) => {
-        sl.value = 0;
-        numberInputs[index].value = 0;
-      });
-
-      // Capture default thumbnail
-      const defaultThumbnail = captureThumbnail(scene, camera, renderer);
-
-      // Reset keyframes to single default
-      animation.keyframes = [{ ...normalizePose(pose), thumbnail: defaultThumbnail, delay: 10 }];
-      animation.kfIndex = 0;
-      animation.currentTime = 0;
-      refreshKfSlider();
-      updateTimeline();
     },
     saveFile() {
       const data = JSON.stringify({ tempo: animation.tempo, keyframes: animation.keyframes }, null, 2);
@@ -114,7 +80,6 @@ export function addAnimationFolder(animation, pose, applyPose, scene, camera, re
             });
             animation.kfIndex = 0;
             animation.currentTime = 0;
-            refreshKfSlider();
             actions.loadCurrent();
             updateTimeline();
           } catch {
@@ -136,7 +101,7 @@ export function addAnimationFolder(animation, pose, applyPose, scene, camera, re
           const axis = sl.dataset.axis.toUpperCase();
           const val = pose[`${part}${axis}`] || 0;
           sl.value = val;
-          numberInputs[idx].value = Math.round(val);
+          sl.nextElementSibling.textContent = val.toFixed(1);
         });
         // Set currentTime to start of this keyframe
         const durations = animation.keyframes.map(kf => (kf.delay || 10) / 20);
@@ -150,7 +115,6 @@ export function addAnimationFolder(animation, pose, applyPose, scene, camera, re
   document.getElementById('insert').addEventListener('click', actions.insert);
   document.getElementById('save').addEventListener('click', actions.save);
   document.getElementById('delete').addEventListener('click', actions.delete);
-  document.getElementById('clear').addEventListener('click', actions.clear);
   document.getElementById('saveFile').addEventListener('click', actions.saveFile);
   document.getElementById('loadFile').addEventListener('click', actions.loadFile);
 
@@ -168,7 +132,6 @@ export function addAnimationFolder(animation, pose, applyPose, scene, camera, re
         e.stopPropagation();
         animation.kfIndex = i;
         animation.showDelayEditor = true;
-        refreshKfSlider();
         actions.loadCurrent();
         updateTimeline();  // Re-render to highlight new active and show editor
       };
@@ -204,5 +167,5 @@ export function addAnimationFolder(animation, pose, applyPose, scene, camera, re
 
   bindAnimationEvents(animation, pose, applyPose, {actions, updateTimeline});
 
-  return { kfSlider, refreshKfSlider, actions, updateTimeline };
+  return { actions, updateTimeline };
 }

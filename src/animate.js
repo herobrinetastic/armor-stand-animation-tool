@@ -73,8 +73,6 @@ function updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta
   const lerpedPose = lerpPoses(poseA, poseB, fraction);
 
   animation.kfIndex = prevIndex;
-  document.getElementById('kfIndex').value = animation.kfIndex;
-  document.getElementById('kfIndex-value').textContent = animation.kfIndex;
 
   Object.assign(pose, lerpedPose);
   updatePose();
