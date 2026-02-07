@@ -79,14 +79,13 @@ function updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta
   if (gui) gui.updateDisplay();
   updateTimeline();
 
-  // Update sliders and number inputs during animation
+  // Update sliders during animation
   const sliders = document.querySelectorAll('#pose-window .rotation');
-  const numberInputs = document.querySelectorAll('#pose-window .rotation-value');
-  sliders.forEach((sl, index) => {
+  sliders.forEach(sl => {
     const part = sl.dataset.part;
     const axis = sl.dataset.axis.toUpperCase();
     const val = pose[`${part}${axis}`] || 0;
     sl.value = val;
-    numberInputs[index].value = Math.round(val);
+    sl.nextElementSibling.value = val.toFixed(1);
   });
 }

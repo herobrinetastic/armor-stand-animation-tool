@@ -1,14 +1,6 @@
-/* animation-controls.css */
+/* styles/item-controls.css */
 
-#right-window {
-    grid-area: 1 / 3 / 3 / 4; /* Full right to bottom */
-    padding: 10px;
-    overflow: hidden; /* No scroll */
-    display: flex;
-    flex-direction: column;
-}
-
-#animation-window {
+#item-window {
     background: rgba(0,0,0,0.8);
     padding: 10px;
     border-radius: 8px;
@@ -18,6 +10,7 @@
     height: auto;
     display: flex;
     flex-direction: column;
+    margin-top: 20px; /* Space below animation window */
 }
 
 .header {
@@ -65,7 +58,7 @@
     width: 100px;
 }
 
-/* Dark theme for pose controls scrollbar */
+/* Dark theme for scrollbar */
 .content::-webkit-scrollbar {
     width: 8px;
 }

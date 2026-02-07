@@ -47,7 +47,7 @@ createArmorStand(armorStand).then(groups => {
     const sliders = document.querySelectorAll('#pose-window .rotation');
     sliders.forEach(sl => {
       sl.value = 0;
-      sl.nextElementSibling.textContent = '0.0';
+      sl.nextElementSibling.value = '0.0';
     });
   });
 

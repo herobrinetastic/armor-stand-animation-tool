@@ -95,13 +95,12 @@ export function addAnimationFolder(animation, pose, applyPose, scene, camera, re
         Object.assign(pose, animation.keyframes[animation.kfIndex]);
         applyPose();
         const sliders = document.querySelectorAll('.rotation');
-        const numberInputs = document.querySelectorAll('.rotation-value');
-        sliders.forEach((sl, idx) => {
+        sliders.forEach((sl) => {
           const part = sl.dataset.part;
           const axis = sl.dataset.axis.toUpperCase();
           const val = pose[`${part}${axis}`] || 0;
           sl.value = val;
-          sl.nextElementSibling.textContent = val.toFixed(1);
+          sl.nextElementSibling.value = val.toFixed(1);
         });
         // Set currentTime to start of this keyframe
         const durations = animation.keyframes.map(kf => (kf.delay || 10) / 20);
