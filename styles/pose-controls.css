@@ -1,0 +1,138 @@
+/* pose-controls.css */
+
+#left-window {
+    grid-area: 1 / 1 / 3 / 2; /* Full left to bottom */
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+#pose-window {
+    background: rgba(0,0,0,0.8);
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    z-index: 10;
+    flex: 1; /* Expand to fill parent */
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.header button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.content {
+    flex: 1; /* Expand content */
+    height: 100%; /* Force full height */
+    overflow-y: auto;
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #444 #222; /* Firefox */
+}
+
+.content label {
+    display: block;
+    margin: 5px 0;
+}
+
+.content button {
+    display: block;
+    width: 100%;
+    margin: 5px 0;
+    padding: 5px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.content button:hover {
+    background: #555;
+}
+
+.content input[type="range"] {
+    width: 100px;
+}
+
+/* Pose window */
+#pose-window .part {
+    margin-bottom: 15px;
+}
+
+#pose-window h3 {
+    margin: 0 0 5px 0;
+    font-size: 14px;
+}
+
+#pose-window label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 3px 0;
+    font-size: 12px;
+}
+
+#pose-window input[type="range"] {
+    width: 150px;
+}
+
+.rotation-value {
+    min-width: 40px;
+    text-align: right;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 12px;
+    -moz-appearance: textfield; /* Hide spin buttons */
+}
+
+.rotation-value::-webkit-outer-spin-button,
+.rotation-value::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+#left-window::-webkit-scrollbar {
+    width: 8px;
+}
+
+#left-window::-webkit-scrollbar-track {
+    background: #222; 
+}
+
+#left-window::-webkit-scrollbar-thumb {
+    background: #444; 
+}
+
+#left-window::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+
+/* Dark theme for pose controls scrollbar */
+.content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.content::-webkit-scrollbar-track {
+    background: #222; 
+}
+
+.content::-webkit-scrollbar-thumb {
+    background: #444; 
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
