@@ -84,6 +84,8 @@ body {
     flex: 1; /* Expand content */
     height: 100%; /* Force full height */
     overflow-y: auto;
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #444 #222; /* Firefox */
 }
 
 .content label {
@@ -321,7 +323,7 @@ body {
     transition: all 0.2s;
 }
 
-.timeline img:hover { transform: scale(1); border-color: #888888; }
+.timeline img:hover { transform: scale(1.08); border-color: #888888; }
 .timeline img.active { border-color: red; box-shadow: 0 0 12px rgba(255,0,0,0.6); }  /* Highlight color to red */
 
 #left-window::-webkit-scrollbar {
@@ -368,4 +370,21 @@ body {
 .kf-delay-editor input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+/* Dark theme for pose controls scrollbar */
+.content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.content::-webkit-scrollbar-track {
+    background: #222; 
+}
+
+.content::-webkit-scrollbar-thumb {
+    background: #444; 
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+    background: #555; 
 }
