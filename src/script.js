@@ -12,22 +12,48 @@ const container = document.getElementById('model-container');
 const { scene, camera, renderer, controls, armorStand } = initScene();
 container.appendChild(renderer.domElement);
 
-// Initial size to container
+// Set initial size
 renderer.setSize(container.clientWidth, container.clientHeight);
 camera.aspect = container.clientWidth / container.clientHeight;
 camera.updateProjectionMatrix();
 
 const transformControls = initTransformControls(scene, camera, renderer, controls);
-createArmorStand(armorStand).then(groups => {
-  initSelection(camera, transformControls, groups, renderer); // Passed renderer
 
-  const { pose, updatePose, animation, updateTimeline } = initGUI(groups, scene, camera, transformControls, renderer);
+createArmorStand(armorStand).then(groups => {
+  initSelection(camera, transformControls, groups, renderer);
+
+  // Initialize GUI (now includes sword checkbox handling)
+  const { pose, updatePose, animation, updateTimeline, syncUI } = initGUI(
+    groups, 
+    scene, 
+    camera, 
+    transformControls, 
+    renderer
+  );
+
+  transformControls.addEventListener('objectChange', () => {
+    const object = transformControls.object;
+    if (!object) return;
+    const part = object.name;
+
+    function normalizeAngle(deg) {
+      deg = ((deg % 360) + 360) % 360;
+      if (deg > 180) deg -= 360;
+      return deg;
+    }
+
+    pose[`${part}X`] = normalizeAngle(THREE.MathUtils.radToDeg(object.rotation.x));
+    pose[`${part}Y`] = normalizeAngle(THREE.MathUtils.radToDeg(object.rotation.y));
+    pose[`${part}Z`] = normalizeAngle(THREE.MathUtils.radToDeg(object.rotation.z));
+
+    syncUI();
+  });
 
   animation.currentTime = 0;
 
-  startAnimation(renderer, scene, camera, controls, animation, pose, updatePose, null, updateTimeline);
+  startAnimation(renderer, scene, camera, controls, animation, pose, updatePose, updateTimeline);
 
-  // Add default keyframe after textures and first render
+  // Add default keyframe after textures load and first render
   requestAnimationFrame(() => {
     const defaultThumbnail = captureThumbnail(scene, camera, renderer);
     animation.keyframes.push({ ...pose, thumbnail: defaultThumbnail });
@@ -35,7 +61,7 @@ createArmorStand(armorStand).then(groups => {
     updateTimeline();
   });
 
-  // Reset button listener
+  // Reset Pose button
   document.getElementById('reset-pose-btn').addEventListener('click', () => {
     pose.headX = 0; pose.headY = 0; pose.headZ = 0;
     pose.bodyX = 0; pose.bodyY = 0; pose.bodyZ = 0;
@@ -43,7 +69,10 @@ createArmorStand(armorStand).then(groups => {
     pose.rightArmX = 0; pose.rightArmY = 0; pose.rightArmZ = 0;
     pose.leftLegX = 0; pose.leftLegY = 0; pose.leftLegZ = 0;
     pose.rightLegX = 0; pose.rightLegY = 0; pose.rightLegZ = 0;
+
     updatePose();
+
+    // Reset all sliders and number inputs
     const sliders = document.querySelectorAll('#pose-window .rotation');
     sliders.forEach(sl => {
       sl.value = 0;
@@ -51,7 +80,7 @@ createArmorStand(armorStand).then(groups => {
     });
   });
 
-  // Play/pause button listener
+  // Play/Pause button
   const playPauseBtn = document.getElementById('play-pause-btn');
 
   function updatePlayPauseIcon() {
@@ -60,14 +89,17 @@ createArmorStand(armorStand).then(groups => {
 
   playPauseBtn.addEventListener('click', () => {
     animation.playing = !animation.playing;
+    if (animation.playing) {
+      transformControls.detach();
+    }
     updatePlayPauseIcon();
   });
 
-  updatePlayPauseIcon(); // Initial state
+  updatePlayPauseIcon(); // Initial icon
 });
 
 window.addEventListener('resize', () => {
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    camera.aspect = container.clientWidth / container.clientHeight;
-    camera.updateProjectionMatrix();
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  camera.aspect = container.clientWidth / container.clientHeight;
+  camera.updateProjectionMatrix();
 });
