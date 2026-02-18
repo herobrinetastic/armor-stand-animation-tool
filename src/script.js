@@ -13,11 +13,13 @@ const { scene, camera, renderer, controls, armorStand } = initScene();
 container.appendChild(renderer.domElement);
 
 // Set initial size
+// Set initial size
 renderer.setSize(container.clientWidth, container.clientHeight);
 camera.aspect = container.clientWidth / container.clientHeight;
 camera.updateProjectionMatrix();
 
 const transformControls = initTransformControls(scene, camera, renderer, controls);
+
 
 createArmorStand(armorStand).then(groups => {
   initSelection(camera, transformControls, groups, renderer);
@@ -54,6 +56,7 @@ createArmorStand(armorStand).then(groups => {
   startAnimation(renderer, scene, camera, controls, animation, pose, updatePose, updateTimeline);
 
   // Add default keyframe after textures load and first render
+  // Add default keyframe after textures load and first render
   requestAnimationFrame(() => {
     const defaultThumbnail = captureThumbnail(scene, camera, renderer);
     animation.keyframes.push({ ...pose, thumbnail: defaultThumbnail });
@@ -61,6 +64,7 @@ createArmorStand(armorStand).then(groups => {
     updateTimeline();
   });
 
+  // Reset Pose button
   // Reset Pose button
   document.getElementById('reset-pose-btn').addEventListener('click', () => {
     pose.headX = 0; pose.headY = 0; pose.headZ = 0;
@@ -70,7 +74,10 @@ createArmorStand(armorStand).then(groups => {
     pose.leftLegX = 0; pose.leftLegY = 0; pose.leftLegZ = 0;
     pose.rightLegX = 0; pose.rightLegY = 0; pose.rightLegZ = 0;
 
+
     updatePose();
+
+    // Reset all sliders and number inputs
 
     // Reset all sliders and number inputs
     const sliders = document.querySelectorAll('#pose-window .rotation');
@@ -80,6 +87,7 @@ createArmorStand(armorStand).then(groups => {
     });
   });
 
+  // Play/Pause button
   // Play/Pause button
   const playPauseBtn = document.getElementById('play-pause-btn');
 
@@ -96,9 +104,13 @@ createArmorStand(armorStand).then(groups => {
   });
 
   updatePlayPauseIcon(); // Initial icon
+  updatePlayPauseIcon(); // Initial icon
 });
 
 window.addEventListener('resize', () => {
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  camera.aspect = container.clientWidth / container.clientHeight;
+  camera.updateProjectionMatrix();
   renderer.setSize(container.clientWidth, container.clientHeight);
   camera.aspect = container.clientWidth / container.clientHeight;
   camera.updateProjectionMatrix();
