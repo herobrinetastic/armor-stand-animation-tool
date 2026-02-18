@@ -13,7 +13,6 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
   };
 
   // Apply current pose values to the actual Three.js groups
-  // Apply current pose values to the actual Three.js groups
   const applyPose = () => {
     groups.head.rotation.set(
       THREE.MathUtils.degToRad(pose.headX),
@@ -64,13 +63,10 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
   };
 
   // Slider + number input handling
-  // Slider + number input handling
   const sliders = document.querySelectorAll('#pose-window .rotation');
   sliders.forEach(sl => {
     const part = sl.dataset.part;
     const axis = sl.dataset.axis.toUpperCase();
-    const numberInput = sl.nextElementSibling;
-
     const numberInput = sl.nextElementSibling;
 
     sl.addEventListener('input', () => {
@@ -79,7 +75,6 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
       numberInput.value = val.toFixed(1);
       updatePose();
     });
-
 
     numberInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
@@ -90,22 +85,10 @@ export function initGUI(groups, scene, camera, transformControls, renderer) {
           sl.value = newVal;
           numberInput.value = newVal.toFixed(1);
           updatePose();
-          updatePose();
         }
       }
     });
   });
-
-  // Sword checkbox
-  const showSwordCheckbox = document.getElementById('show-sword');
-  if (groups.sword) {
-    showSwordCheckbox.checked = false;
-    groups.sword.visible = false;
-
-    showSwordCheckbox.addEventListener('change', () => {
-      groups.sword.visible = showSwordCheckbox.checked;
-    });
-  }
 
   // Sword checkbox
   const showSwordCheckbox = document.getElementById('show-sword');
