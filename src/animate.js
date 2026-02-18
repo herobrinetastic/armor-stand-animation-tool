@@ -6,7 +6,7 @@ export function startAnimation(renderer, scene, camera, controls, animation, pos
     const delta = (time - lastTime) / 1000;
     lastTime = time;
     controls.update();
-    updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta);
+    updateAnimation(animation, pose, updatePose, updateTimeline, delta);
     renderer.render(scene, camera);
   }
   animate(0);
@@ -40,13 +40,13 @@ function lerpPoses(poseA, poseB, t) {
   };
 }
 
-function updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta) {
+function updateAnimation(animation, pose, updatePose, updateTimeline, delta) {
   if (!animation.playing || animation.keyframes.length < 2) return;
 
   animation.currentTime += delta * animation.tempo;
 
   const kfLen = animation.keyframes.length;
-  const durations = animation.keyframes.map((_, i) => (animation.keyframes[(i + 1) % kfLen].delay || 10) / 20); // seconds per segment
+  const durations = animation.keyframes.map((_, i) => (animation.keyframes[(i + 1) % kfLen].delay || 10) / 20);
   const totalDuration = durations.reduce((a, b) => a + b, 0);
 
   if (totalDuration === 0) return;
@@ -75,17 +75,6 @@ function updateAnimation(animation, pose, updatePose, gui, updateTimeline, delta
   animation.kfIndex = prevIndex;
 
   Object.assign(pose, lerpedPose);
-  updatePose();
-  if (gui) gui.updateDisplay();
+  updatePose();        // ← Now does both model update + UI sync
   updateTimeline();
-
-  // Update sliders during animation
-  const sliders = document.querySelectorAll('#pose-window .rotation');
-  sliders.forEach(sl => {
-    const part = sl.dataset.part;
-    const axis = sl.dataset.axis.toUpperCase();
-    const val = pose[`${part}${axis}`] || 0;
-    sl.value = val;
-    sl.nextElementSibling.value = val.toFixed(1);
-  });
 }
